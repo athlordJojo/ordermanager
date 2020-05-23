@@ -1,0 +1,1 @@
+INSERT INTO order_table (uuid, title, scoreboardnumber, state, company_uuid, created_date, last_modified_date) VALUES ('CC94F0AB57CC4D3BBA9CD3861CF4A541','ordertitle1', 1, 'IN_PROGRESS', 'B28C343D03C14FF190B95DDA8AFD3BFE', '2020-05-23 00:00:01', '2020-05-23 00:09:00');
