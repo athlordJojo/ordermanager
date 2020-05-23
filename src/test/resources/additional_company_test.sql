@@ -1,0 +1,1 @@
+INSERT INTO company (uuid, name, description) VALUES ('AA09E3B519594C92BCEDC643AC50883A','otherCompany', 'otherDescription');

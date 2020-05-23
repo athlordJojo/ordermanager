@@ -1,10 +1,11 @@
 package de.raychouni.ordernotifier;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import de.raychouni.ordernotifier.entities.Order;
-import org.json.JSONObject;
-import org.junit.jupiter.api.Assertions;
+import de.raychouni.ordernotifier.dtos.CompanyDto;
+import de.raychouni.ordernotifier.dtos.OrderDto;
+import de.raychouni.ordernotifier.repos.CompanyRepository;
+import de.raychouni.ordernotifier.repos.OrderRepository;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -12,13 +13,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.web.server.LocalServerPort;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.io.IOException;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -32,9 +35,21 @@ class OrderManagerApplicationTests {
     @Autowired
     private TestRestTemplate restTemplate;
 
+    @Autowired
+    OrderRepository orderRepository;
+
+    @Autowired
+    CompanyRepository companyRepository;
+
     @BeforeEach
     void setUp() {
-        url = "http://localhost:" + port + "/orders";
+        url = "http://localhost:" + port;
+    }
+
+    @AfterEach
+    void tearDown() {
+        orderRepository.deleteAll();
+        companyRepository.deleteAll();
     }
 
     @Autowired
@@ -42,14 +57,31 @@ class OrderManagerApplicationTests {
 
     @Test
     @Sql({"classpath:company_test.sql", "classpath:order_test.sql"})
-    void loadOrders() throws IOException {
-        ResponseEntity<String> response = restTemplate.getForEntity(url, String.class);
+    void loadCompanies() {
+        ResponseEntity<CompanyDto[]> response = restTemplate.getForEntity(url + "/companies", CompanyDto[].class);
         assertEquals(200, response.getStatusCodeValue());
-        String body = response.getBody();
-        JsonNode jsonNode = objectMapper.readTree(body.getBytes());
-        JsonNode orders = jsonNode.get("_embedded").get("orders");
-        assertEquals(1, orders.size());
-        Order order = objectMapper.readValue(orders.get(0).toString(), Order.class);
+        assertEquals(1, response.getBody().length);
     }
 
+    @Test
+    @Sql({"classpath:company_test.sql", "classpath:order_test.sql"})
+    void loadOrdersOfCompany() {
+        ResponseEntity<OrderDto[]> response = restTemplate.getForEntity(url + "/companies/B28C343D-03C1-4FF1-90B9-5DDA8AFD3BFE/orders", OrderDto[].class);
+        assertEquals(200, response.getStatusCodeValue());
+        assertEquals(1, response.getBody().length);
+    }
+
+    @Test
+    @Sql({"classpath:company_test.sql"})
+    void createOrdersForCompany() {
+        OrderDto dto = new OrderDto();
+        dto.setState("IN_PROGRESS");
+        dto.setScoreBoardNumber(1);
+        dto.setTitle("Test title");
+        ResponseEntity<OrderDto> response = restTemplate.postForEntity(url + "/companies/B28C343D-03C1-4FF1-90B9-5DDA8AFD3BFE/orders", dto, OrderDto.class);
+        assertEquals(HttpStatus.CREATED, response.getStatusCode());
+        OrderDto responseDto = response.getBody();
+        assertNotNull(responseDto);
+        assertNotNull(responseDto.getUuid());
+    }
 }

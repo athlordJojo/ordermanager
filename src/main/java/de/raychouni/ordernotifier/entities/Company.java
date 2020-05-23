@@ -33,4 +33,14 @@ public class Company {
     )
     private List<Order> orders;
 
+
+    public void addOrder(Order order){
+        orders.add(order);
+        order.setCompany(this);
+    }
+
+    public void deleteOrder(Order order){
+        orders.remove(order);
+        order.setCompany(null);
+    }
 }
