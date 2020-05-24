@@ -39,4 +39,11 @@ public class OrderController {
         return modelMapper.map(createdOrder, OrderDto.class);
     }
 
+//    @PutMapping("/companies/{companyId}/orders/{orderId}")
+//    @ResponseStatus(HttpStatus.OK)
+//    public OrderDto updateOrder(@RequestBody OrderDto orderDto, @PathVariable("companyId") UUID companyId,
+//                                @PathVariable("orderId") UUID orderId){
+//
+//    }
+
 }

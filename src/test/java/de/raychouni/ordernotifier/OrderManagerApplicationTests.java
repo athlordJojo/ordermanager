@@ -19,6 +19,7 @@ import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.io.IOException;
+import java.util.Objects;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -60,7 +61,7 @@ class OrderManagerApplicationTests {
     void loadCompanies() {
         ResponseEntity<CompanyDto[]> response = restTemplate.getForEntity(url + "/companies", CompanyDto[].class);
         assertEquals(200, response.getStatusCodeValue());
-        assertEquals(1, response.getBody().length);
+        assertEquals(1, Objects.requireNonNull(response.getBody()).length);
     }
 
     @Test
@@ -68,7 +69,7 @@ class OrderManagerApplicationTests {
     void loadOrdersOfCompany() {
         ResponseEntity<OrderDto[]> response = restTemplate.getForEntity(url + "/companies/B28C343D-03C1-4FF1-90B9-5DDA8AFD3BFE/orders", OrderDto[].class);
         assertEquals(200, response.getStatusCodeValue());
-        assertEquals(1, response.getBody().length);
+        assertEquals(1, Objects.requireNonNull(response.getBody()).length);
     }
 
     @Test

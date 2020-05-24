@@ -1,5 +1,6 @@
 package de.raychouni.ordernotifier.entities;
 
+import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.GenericGenerator;
@@ -9,8 +10,7 @@ import java.util.List;
 import java.util.UUID;
 
 @Entity
-@Getter
-@Setter
+@Data
 @Table(name = "company")
 public class Company {
     @GeneratedValue(generator = "uuid2")
