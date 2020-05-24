@@ -13,20 +13,26 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.web.server.LocalServerPort;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
+import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.io.IOException;
+import java.util.Collections;
 import java.util.Objects;
+import java.util.UUID;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.springframework.http.HttpMethod.*;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class OrderManagerApplicationTests {
+
+    private final UUID companyId = UUID.fromString("B28C343D-03C1-4FF1-90B9-5DDA8AFD3BFE");
+    private final UUID companyWithoutOrderId = UUID.fromString("AA09E3B5-1959-4C92-BCED-C643AC50883A");
+    private final UUID order1Id = UUID.fromString("CC94F0AB-57CC-4D3B-BA9C-D3861CF4A541");
 
     @LocalServerPort
     private int port;
@@ -45,6 +51,8 @@ class OrderManagerApplicationTests {
     @BeforeEach
     void setUp() {
         url = "http://localhost:" + port;
+//         for making patch requests: https://stackoverflow.com/questions/29447382/resttemplate-patch-request
+//        restTemplate.getRestTemplate().setRequestFactory(new HttpComponentsClientHttpRequestFactory());
     }
 
     @AfterEach
@@ -67,7 +75,7 @@ class OrderManagerApplicationTests {
     @Test
     @Sql({"classpath:company_test.sql", "classpath:order_test.sql"})
     void loadOrdersOfCompany() {
-        ResponseEntity<OrderDto[]> response = restTemplate.getForEntity(url + "/companies/B28C343D-03C1-4FF1-90B9-5DDA8AFD3BFE/orders", OrderDto[].class);
+        ResponseEntity<OrderDto[]> response = restTemplate.getForEntity(url + "/companies/" + companyId + "/orders", OrderDto[].class);
         assertEquals(200, response.getStatusCodeValue());
         assertEquals(1, Objects.requireNonNull(response.getBody()).length);
     }
@@ -75,14 +83,38 @@ class OrderManagerApplicationTests {
     @Test
     @Sql({"classpath:company_test.sql"})
     void createOrdersForCompany() {
-        OrderDto dto = new OrderDto();
-        dto.setState("IN_PROGRESS");
-        dto.setScoreBoardNumber(1);
-        dto.setTitle("Test title");
-        ResponseEntity<OrderDto> response = restTemplate.postForEntity(url + "/companies/B28C343D-03C1-4FF1-90B9-5DDA8AFD3BFE/orders", dto, OrderDto.class);
+        assertEquals(0, orderRepository.count());
+        OrderDto newDto = new OrderDto();
+        newDto.setState("IN_PROGRESS");
+        newDto.setScoreBoardNumber(1);
+        newDto.setTitle("Test title");
+        ResponseEntity<OrderDto> response = restTemplate.postForEntity(url + "/companies/" + companyId + "/orders", newDto, OrderDto.class);
         assertEquals(HttpStatus.CREATED, response.getStatusCode());
         OrderDto responseDto = response.getBody();
         assertNotNull(responseDto);
         assertNotNull(responseDto.getUuid());
+        assertEquals(1, orderRepository.count());
+    }
+
+    @Test
+    @Sql({"classpath:company_test.sql", "classpath:order_test.sql"})
+    void updateOrderOfCompany() {
+        OrderDto updateDto = new OrderDto();
+        updateDto.setState("READY");
+        updateDto.setScoreBoardNumber(2);
+        updateDto.setTitle("New title");
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
+        HttpEntity<OrderDto> request = new HttpEntity<>(updateDto, headers);
+
+        ResponseEntity<OrderDto> response = restTemplate.exchange(url + "/companies/" + companyId + "/orders/" + order1Id, PUT, request, OrderDto.class);
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertTrue(response.hasBody());
+        OrderDto body = Objects.requireNonNull(response.getBody());
+        assertEquals("READY", body.getState());
+        assertEquals("New title", body.getTitle());
+        assertEquals(2, body.getScoreBoardNumber());
     }
 }

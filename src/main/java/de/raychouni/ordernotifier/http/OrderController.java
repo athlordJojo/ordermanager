@@ -28,8 +28,7 @@ public class OrderController {
     @ResponseStatus(HttpStatus.OK)
     public List<OrderDto> getAllOrders(@PathVariable("companyId") UUID companyId) {
         List<Order> all = orderService.getAllOrdersByCompanyId(companyId);
-        List<OrderDto> orderDtos = all.stream().map(order -> modelMapper.map(order, OrderDto.class)).collect(Collectors.toList());
-        return orderDtos;
+        return all.stream().map(order -> modelMapper.map(order, OrderDto.class)).collect(Collectors.toList());
     }
 
     @PostMapping("/companies/{companyId}/orders")
@@ -39,11 +38,12 @@ public class OrderController {
         return modelMapper.map(createdOrder, OrderDto.class);
     }
 
-//    @PutMapping("/companies/{companyId}/orders/{orderId}")
-//    @ResponseStatus(HttpStatus.OK)
-//    public OrderDto updateOrder(@RequestBody OrderDto orderDto, @PathVariable("companyId") UUID companyId,
-//                                @PathVariable("orderId") UUID orderId){
-//
-//    }
+    @PutMapping("/companies/{companyId}/orders/{orderId}")
+    @ResponseStatus(HttpStatus.OK)
+    public OrderDto updateOrder(@RequestBody OrderDto orderDto, @PathVariable("companyId") UUID companyId,
+                                @PathVariable("orderId") UUID orderId){
+        Order updatedOrder = orderService.updateOrder(modelMapper.map(orderDto, Order.class), companyId, orderId);
+        return modelMapper.map(updatedOrder, OrderDto.class);
+    }
 
 }

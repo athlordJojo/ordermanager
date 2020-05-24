@@ -16,9 +16,9 @@ class OrderRepositoryTest {
 
     @Autowired
     OrderRepository orderRepository;
-    private UUID companyId = UUID.fromString("B28C343D-03C1-4FF1-90B9-5DDA8AFD3BFE");;
-    private UUID companyWithoutOrderId = UUID.fromString("AA09E3B5-1959-4C92-BCED-C643AC50883A");
-    private UUID order1Id = UUID.fromString("CC94F0AB-57CC-4D3B-BA9C-D3861CF4A541");
+    private final UUID companyId = UUID.fromString("B28C343D-03C1-4FF1-90B9-5DDA8AFD3BFE");
+    private final UUID companyWithoutOrderId = UUID.fromString("AA09E3B5-1959-4C92-BCED-C643AC50883A");
+    private final UUID order1Id = UUID.fromString("CC94F0AB-57CC-4D3B-BA9C-D3861CF4A541");
 
     @Test
     @Sql({"classpath:company_test.sql", "classpath:order_test.sql"})
@@ -51,7 +51,6 @@ class OrderRepositoryTest {
     @Sql({"classpath:company_test.sql", "classpath:additional_company_test.sql", "classpath:order_test.sql"})
     void findFirstByUuidAndCompanyUuid_withNonExistingMapping_expectEmptyResult(){
         Optional<Order> result = orderRepository.findFirstByUuidAndCompany_Uuid(order1Id, companyWithoutOrderId);
-        assertFalse(result.isPresent());
-        assertFalse(result.isEmpty());
+        assertTrue(result.isEmpty());
     }
 }
