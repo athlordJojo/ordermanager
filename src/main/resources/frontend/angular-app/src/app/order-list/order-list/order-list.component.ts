@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import {OrderService} from "../../service/order.service";
 import {OrderDto} from "../../model/order-dto";
 import {timer} from 'rxjs';
@@ -8,13 +8,19 @@ import {timer} from 'rxjs';
   templateUrl: './order-list.component.html',
   styleUrls: ['./order-list.component.css']
 })
-export class OrderListComponent implements OnInit {
+export class OrderListComponent implements OnInit, OnDestroy {
+  subscription;
+
+  ngOnDestroy(): void {
+    console.log("Cancel timer.")
+    this.subscription.unsubscribe();
+  }
 
   constructor(private orderService: OrderService) {
     const t = timer(2000, 4000);
-    t.subscribe(v => {
+    this.subscription = t.subscribe(v => {
       this.loadData();
-    })
+    });
   }
 
   scoreBoardNumberOflastReadyOrder: string;

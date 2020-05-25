@@ -16,11 +16,11 @@ export class OrderService {
     return this.http.get<OrderDto[]>(this.url + "/orders");
   }
 
-  public save(order: OrderDto) {
+  public save(order: OrderDto): Observable<OrderDto> {
     return this.http.post<OrderDto>(this.url + "/orders", order);
   }
 
-  public update(order: OrderDto) {
+  public update(order: OrderDto): Observable<OrderDto> {
     return this.http.put<OrderDto>(this.url + "/orders/" + order.uuid, order);
   }
 }
