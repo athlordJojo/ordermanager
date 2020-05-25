@@ -26,6 +26,7 @@ public class OrderController {
     @GetMapping("/companies/{companyId}/orders")
     @ResponseBody
     @ResponseStatus(HttpStatus.OK)
+    @CrossOrigin(origins = "http://localhost:4200")
     public List<OrderDto> getAllOrders(@PathVariable("companyId") UUID companyId) {
         List<Order> all = orderService.getAllOrdersByCompanyId(companyId);
         return all.stream().map(order -> modelMapper.map(order, OrderDto.class)).collect(Collectors.toList());

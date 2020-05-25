@@ -1,0 +1,23 @@
+<div class="card my-5">
+  <div class="card-body">
+    <table class="table table-bordered table-striped">
+      <thead class="thead-dark">
+      <tr>
+        <th scope="col">is</th>
+<!--        <th scope="col">Name</th>-->
+<!--        <th scope="col">Email</th>-->
+      </tr>
+      </thead>
+      <tbody>
+      <tr *ngFor="let order of orders">
+        <td>{{ order.uuid }}</td>
+<!--        <td>{{ order.title }}</td>-->
+<!--        <td>{{ order.scoreBoardNumber }}</td>-->
+<!--        <td>{{ order.state }}</td>-->
+<!--        <td>{{ order.createdDate }}</td>-->
+<!--        <td>{{ order.lastModifiedDate }}</td>-->
+      </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
