@@ -12,7 +12,10 @@ import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import static org.springframework.web.bind.annotation.RequestMethod.*;
+
 @RestController
+@CrossOrigin
 public class OrderController {
 
     private final OrderService orderService;
@@ -26,7 +29,6 @@ public class OrderController {
     @GetMapping("/companies/{companyId}/orders")
     @ResponseBody
     @ResponseStatus(HttpStatus.OK)
-    @CrossOrigin(origins = "http://localhost:4200")
     public List<OrderDto> getAllOrders(@PathVariable("companyId") UUID companyId) {
         List<Order> all = orderService.getAllOrdersByCompanyId(companyId);
         return all.stream().map(order -> modelMapper.map(order, OrderDto.class)).collect(Collectors.toList());
@@ -42,7 +44,7 @@ public class OrderController {
     @PutMapping("/companies/{companyId}/orders/{orderId}")
     @ResponseStatus(HttpStatus.OK)
     public OrderDto updateOrder(@RequestBody OrderDto orderDto, @PathVariable("companyId") UUID companyId,
-                                @PathVariable("orderId") UUID orderId){
+                                @PathVariable("orderId") UUID orderId) {
         Order updatedOrder = orderService.updateOrder(modelMapper.map(orderDto, Order.class), companyId, orderId);
         return modelMapper.map(updatedOrder, OrderDto.class);
     }

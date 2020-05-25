@@ -16,7 +16,7 @@ export class OrderService {
     return this.http.get<OrderDto[]>(this.url + "/orders");
   }
 
-  public save(user: OrderDto) {
-    return this.http.post<OrderDto>(this.url, user);
+  public save(order: OrderDto) {
+    return this.http.post<OrderDto>(this.url + "/orders", order);
   }
 }
