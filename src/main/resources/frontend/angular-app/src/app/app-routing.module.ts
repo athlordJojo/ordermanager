@@ -5,7 +5,7 @@ import {OrderFormComponent} from "./order-form/order-form/order-form.component";
 
 const routes: Routes = [
   { path: 'orders', component: OrderListComponent },
-  { path: 'addorder', component: OrderFormComponent }
+  { path: 'manage', component: OrderFormComponent }
 ];
 
 @NgModule({

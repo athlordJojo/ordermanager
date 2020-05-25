@@ -17,7 +17,6 @@ export class OrderListComponent implements OnInit {
     })
   }
 
-  orders: OrderDto[];
   scoreBoardNumberOflastReadyOrder: string;
   readyOrders: OrderDto[];
   inProgressOrders: OrderDto[];
@@ -40,9 +39,8 @@ export class OrderListComponent implements OnInit {
         return 0;
       }
 
-      this.orders = data;
-      this.inProgressOrders = this.orders.filter(order => order.state == 'IN_PROGRESS').sort(sortOrderByModifiedDate);
-      this.readyOrders = this.orders.filter(order => order.state == 'READY').sort(sortOrderByModifiedDate);
+      this.inProgressOrders = data.filter(order => order.state == 'IN_PROGRESS').sort(sortOrderByModifiedDate);
+      this.readyOrders = data.filter(order => order.state == 'READY').sort(sortOrderByModifiedDate);
       this.scoreBoardNumberOflastReadyOrder = this.readyOrders.length > 0 ? this.readyOrders[0].scoreBoardNumber.toString() : '-';
     });
   }

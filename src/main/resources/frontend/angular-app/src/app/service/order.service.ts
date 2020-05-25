@@ -19,4 +19,8 @@ export class OrderService {
   public save(order: OrderDto) {
     return this.http.post<OrderDto>(this.url + "/orders", order);
   }
+
+  public update(order: OrderDto) {
+    return this.http.put<OrderDto>(this.url + "/orders/" + order.uuid, order);
+  }
 }
