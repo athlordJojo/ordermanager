@@ -3,14 +3,14 @@
     <form (ngSubmit)="onSubmit()" #orderForm="ngForm">
       <div class="form-group">
         <label for="scoreBoardNumber">Name</label>
-        <input type="text" [(ngModel)]="order.scoreBoardNumber"
+        <input type="number" [(ngModel)]="order.scoreBoardNumber"
                class="form-control"
                id="scoreBoardNumber"
                name="scoreBoardNumber"
-               placeholder="Enter scoreBoardNumber"
+               placeholder="Bestellnummer eingeben"
                required #scoreBoardNumber="ngModel">
       </div>
-      <div [hidden]="!scoreBoardNumber.pristine" class="alert alert-danger">scoreBoardNumber is required</div>
+      <div [hidden]="!scoreBoardNumber.pristine" class="alert alert-danger">Bestellnummer wird benötigt</div>
       <button type="submit" [disabled]="!orderForm.form.valid"
               class="btn btn-info">Submit</button>
     </form>

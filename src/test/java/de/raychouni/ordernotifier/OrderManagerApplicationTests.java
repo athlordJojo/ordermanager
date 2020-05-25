@@ -76,7 +76,7 @@ class OrderManagerApplicationTests {
     @Sql({"classpath:company_test.sql", "classpath:order_test.sql"})
     void loadOrdersOfCompany() {
         ResponseEntity<OrderDto[]> response = restTemplate.getForEntity(url + "/companies/" + companyId + "/orders", OrderDto[].class);
-        assertEquals(200, response.getStatusCodeValue());
+        assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(1, Objects.requireNonNull(response.getBody()).length);
     }
 
@@ -94,6 +94,10 @@ class OrderManagerApplicationTests {
         assertNotNull(responseDto);
         assertNotNull(responseDto.getUuid());
         assertEquals(1, orderRepository.count());
+
+        ResponseEntity<OrderDto[]> orderResponse = restTemplate.getForEntity(url + "/companies/" + companyId + "/orders", OrderDto[].class);
+        assertEquals(HttpStatus.OK, orderResponse.getStatusCode());
+        assertEquals(1, Objects.requireNonNull(orderResponse.getBody()).length);
     }
 
     @Test

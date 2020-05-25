@@ -21,6 +21,7 @@ export class OrderFormComponent implements OnInit {
     private router: Router,
     private orderService: OrderService) {
     this.order = new OrderDto();
+    this.order.state = 'IN_PROGRESS';
   }
 
   onSubmit() {

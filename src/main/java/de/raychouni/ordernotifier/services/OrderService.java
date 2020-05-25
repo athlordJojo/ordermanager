@@ -30,6 +30,7 @@ public class OrderService {
         Company c = companyRepository.findById(companyId).orElseThrow(EntityNotFoundException::new);
         orderRepository.saveAndFlush(order);
         c.addOrder(order);
+        companyRepository.save(c);
         return order;
     }
 
