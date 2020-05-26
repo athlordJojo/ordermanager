@@ -1,0 +1,64 @@
+<div class="container bg-dark">
+
+  <div class="row bg-dark">
+    <div class="col-lg">
+      <p class="display-4 text-white text-center">
+        Neue Bestellung aufgeben
+      </p>
+      <form (ngSubmit)="onSubmit()" #orderForm="ngForm">
+        <div class="form-group">
+          <input type="number" [(ngModel)]="newOrder.scoreBoardNumber"
+                 class="form-control"
+                 id="scoreBoardNumber"
+                 name="scoreBoardNumber"
+                 placeholder="Bestellnummer eingeben"
+                 required #scoreBoardNumber="ngModel">
+        </div>
+        <div [hidden]="!scoreBoardNumber.pristine" class="alert alert-danger">Bestellnummer wird benötigt</div>
+        <button type="submit" [disabled]="!orderForm.form.valid"
+                class="btn btn-info">Erstellen
+        </button>
+      </form>
+    </div>
+  </div>
+  <!--  <div class="row bg-dark">-->
+
+  <!--  </div>-->
+  <div class="row bg-dark">
+    <div class="col-lg">
+      <p class="display-4 text-white text-center">
+        Bestellungen verwalten
+      </p>
+      <div class="text-center">
+        <div class="btn-group btn-group-lg" role="group" aria-label="Basic example">
+          <button [disabled]="!selectedOrder" type="button" class="btn btn-secondary"
+                  (click)="changeStateOfSelectedOrder('IN_PROGRESS')">In Bearbeitung
+          </button>
+          <button [disabled]="!selectedOrder" type="button" class="btn btn-secondary"
+                  (click)="changeStateOfSelectedOrder('READY')">Bereit
+          </button>
+          <button [disabled]="!selectedOrder" type="button" class="btn btn-secondary"
+                  (click)="changeStateOfSelectedOrder('DONE')">Fertig
+          </button>
+        </div>
+      </div>
+
+      <table class="table table-bordered table-striped text-center">
+        <thead class="thead-dark">
+        <tr>
+          <th scope="col">Bestellnummer</th>
+          <th scope="col">Zustand</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr (click)="selectOrder(order)"
+            [ngClass]="{'table-success': order.state === 'READY', 'table-warning':order.state === 'IN_PROGRESS', 'table-dark':order.state === 'DONE' }"
+            class="table-success" *ngFor="let order of orders">
+          <td>{{ order.scoreBoardNumber }}</td>
+          <td>{{ order.state }}</td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

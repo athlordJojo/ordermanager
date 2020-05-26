@@ -108,7 +108,7 @@
                 </executions>
                 <configuration>
                     <executable>ng</executable>
-                    <workingDirectory>src/main/resources/frontend/angular-app</workingDirectory>
+                    <workingDirectory>angular-app</workingDirectory>
                     <arguments>build</arguments>
                 </configuration>
             </plugin>

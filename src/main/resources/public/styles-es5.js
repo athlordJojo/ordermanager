@@ -464,7 +464,7 @@
   /***/
   function _(module, exports, __webpack_require__) {
     module.exports = __webpack_require__(
-    /*! /Users/joanraychouni/gitprojects/order-manager/src/main/resources/frontend/angular-app/src/styles.css */
+    /*! /Users/joanraychouni/gitprojects/order-manager/angular-app/src/styles.css */
     "./src/styles.css");
     /***/
   }
