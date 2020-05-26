@@ -33,3 +33,4 @@ build/
 angular-app/node_modules
 src/main/resources/public/**
 /angular-app/src/assets/logo.png
+ordermanager-db.mv.db
