@@ -16,13 +16,13 @@
 
     exports = ___CSS_LOADER_API_IMPORT___(true); // Module
 
-    exports.push([module.i, "/* You can add global styles to this file, and also import other style files */\n", "", {
+    exports.push([module.i, "/* You can add global styles to this file, and also import other style files */\n.gradientbg {\n  background: rgb(145,124,133);\n  background: radial-gradient(circle, rgba(145,124,133,1) 0%, rgba(43,60,79,1) 50%);\n}\n\n\n", "", {
       "version": 3,
       "sources": ["styles.css"],
       "names": [],
-      "mappings": "AAAA,8EAA8E",
+      "mappings": "AAAA,8EAA8E;AAC9E;EACE,4BAA4B;EAC5B,iFAAiF;AACnF",
       "file": "styles.css",
-      "sourcesContent": ["/* You can add global styles to this file, and also import other style files */\n"]
+      "sourcesContent": ["/* You can add global styles to this file, and also import other style files */\n.gradientbg {\n  background: rgb(145,124,133);\n  background: radial-gradient(circle, rgba(145,124,133,1) 0%, rgba(43,60,79,1) 50%);\n}\n\n\n"]
     }]); // Exports
 
     module.exports = exports;
