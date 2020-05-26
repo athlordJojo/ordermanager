@@ -30,4 +30,5 @@ build/
 ### VS Code ###
 .vscode/
 
-src/main/resources/frontend/angular-app/node_modules
+angular-app/node_modules
+src/main/resources/public
