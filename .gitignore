@@ -31,6 +31,6 @@ build/
 .vscode/
 
 angular-app/node_modules
-**/resources/public/
+src/main/resources/public
 /angular-app/src/assets/logo.png
 ordermanager-db.mv.db

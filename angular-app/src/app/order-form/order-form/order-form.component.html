@@ -12,7 +12,7 @@
                placeholder="Bestellnummer eingeben"
                required #scoreBoardNumber="ngModel">
       </div>
-      <div [hidden]="!scoreBoardNumber.pristine" class="alert alert-danger">Bestellnummer wird benötigt</div>
+      <div [hidden]="orderForm.form.valid || !newOrder.scoreBoardNumber" class="alert alert-danger">Bestellnummer wird benötigt</div>
       <button type="submit" [disabled]="!orderForm.form.valid"
               class="btn btn-info">Erstellen
       </button>
