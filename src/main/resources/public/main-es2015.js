@@ -45,7 +45,9 @@ __webpack_require__.r(__webpack_exports__);
 
 const routes = [
     { path: 'orders', component: _order_list_order_list_order_list_component__WEBPACK_IMPORTED_MODULE_2__["OrderListComponent"] },
-    { path: 'manage', component: _order_form_order_form_order_form_component__WEBPACK_IMPORTED_MODULE_3__["OrderFormComponent"] }
+    { path: 'manage', component: _order_form_order_form_order_form_component__WEBPACK_IMPORTED_MODULE_3__["OrderFormComponent"] },
+    { path: '', redirectTo: '/orders', pathMatch: 'full' },
+    { path: '**', component: _order_list_order_list_order_list_component__WEBPACK_IMPORTED_MODULE_2__["OrderListComponent"] }
 ];
 class AppRoutingModule {
 }
@@ -537,7 +539,7 @@ __webpack_require__.r(__webpack_exports__);
 class OrderService {
     constructor(http) {
         this.http = http;
-        this.url = 'http://localhost:8080/companies/B28C343D-03C1-4FF1-90B9-5DDA8AFD3BFE';
+        this.url = '/companies/B28C343D-03C1-4FF1-90B9-5DDA8AFD3BFE';
     }
     findAll() {
         return this.http.get(this.url + "/orders");

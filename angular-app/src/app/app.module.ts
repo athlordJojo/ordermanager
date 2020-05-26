@@ -8,12 +8,14 @@ import {FormsModule} from "@angular/forms";
 import {OrderService} from "./service/order.service";
 import {HttpClientModule} from "@angular/common/http";
 import {AppRoutingModule} from "./app-routing.module";
+import { HeaderComponent } from './header/header.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     OrderListComponent,
-    OrderFormComponent
+    OrderFormComponent,
+    HeaderComponent
   ],
   imports: [
     BrowserModule,
