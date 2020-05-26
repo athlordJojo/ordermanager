@@ -9,7 +9,7 @@ export class OrderService {
   private url: string;
 
   constructor(private http: HttpClient) {
-    this.url = 'http://localhost:8080/companies/B28C343D-03C1-4FF1-90B9-5DDA8AFD3BFE';
+    this.url = '/companies/B28C343D-03C1-4FF1-90B9-5DDA8AFD3BFE';
   }
 
   public findAll(): Observable<OrderDto[]> {
