@@ -17,7 +17,7 @@ export class OrderFormComponent implements OnInit {
 
   newOrder: OrderDto;
   selectedOrder: OrderDto;
-  orders: OrderDto[];
+  orders: OrderDto[] = [];
 
   constructor(
     private route: ActivatedRoute,
@@ -28,13 +28,10 @@ export class OrderFormComponent implements OnInit {
   }
 
   onSubmit() {
-    this.orderService.save(this.newOrder).subscribe(result => this.gotoUserList());
-    this.newOrder.scoreBoardNumber = null;
-    this.loadData();
-  }
-
-  gotoUserList() {
-    // this.router.navigate(['/orders']);
+    this.orderService.save(this.newOrder).subscribe(result => {
+      this.newOrder.scoreBoardNumber = null;
+      this.loadData();
+    });
   }
 
   loadData() {
@@ -56,4 +53,27 @@ export class OrderFormComponent implements OnInit {
     this.orderService.update(this.selectedOrder).subscribe(data => this.loadData());
   }
 
+  getClassForRow(order: OrderDto) {
+    let classForRow: string
+
+    if (order === this.selectedOrder) {
+      classForRow = "table-primary";
+    } else {
+      switch (order.state) {
+        case "IN_PROGRESS": {
+          classForRow = "table-warning"
+          break;
+        }
+        case "READY": {
+          classForRow = "table-success"
+          break;
+        }
+        case "DONE": {
+          classForRow = "table-dark"
+          break;
+        }
+      }
+    }
+    return classForRow;
+  }
 }
