@@ -1,41 +1,51 @@
 <div class="row bg-dark">
   <div class="col-lg">
     <p class="display-1 text-white text-center">
-      Bereit zur Abholung: {{scoreBoardNumberOflastReadyOrder}}
+      Bereit zur Abholung
     </p>
+    <p class="text-success display-1 text-center">{{scoreBoardNumberOflastReadyOrder}}</p>
   </div>
 </div>
 
 <div class="row bg-dark">
-  <div class="col-lg">
-    <table class="table table-bordered table-striped text-center">
-      <thead class="thead-dark">
-      <tr>
-        <th scope="col">In Bearbeitung</th>
-      </tr>
-      </thead>
-      <tbody>
-      <tr class="table-warning" *ngFor="let inProgressOrder of inProgressOrders">
-        <td>{{ inProgressOrder.scoreBoardNumber }}</td>
-      </tr>
-      </tbody>
-    </table>
+  <div class="col">
+    <ul class="  list-group text-center">
+      <li class="list-group-item list-group-item-dark">In Bearbeitung</li>
+      <li *ngFor="let inProgressOrder of inProgressOrders" class="list-group-item list-group-item-danger">{{inProgressOrder.scoreBoardNumber }}</li>
+    </ul>
+<!--    <table class="table table-bordered table-striped text-center">-->
+<!--      <thead class="thead-dark">-->
+<!--      <tr>-->
+<!--        <th scope="col">In Bearbeitung</th>-->
+<!--      </tr>-->
+<!--      </thead>-->
+<!--      <tbody>-->
+<!--      <tr class="table-warning" *ngFor="let inProgressOrder of inProgressOrders">-->
+<!--        <td>{{ inProgressOrder.scoreBoardNumber }}</td>-->
+<!--      </tr>-->
+<!--      </tbody>-->
+<!--    </table>-->
 
   </div>
-
-  <div class="col-lg">
-    <table class="table table-bordered table-striped text-center">
-      <thead class="thead-dark">
-      <tr>
-        <th scope="col">Bereit zur Abholung</th>
-      </tr>
-      </thead>
-      <tbody>
-      <tr class="table-success" *ngFor="let readyOrder of readyOrders">
-        <td>{{ readyOrder.scoreBoardNumber }}</td>
-      </tr>
-      </tbody>
-    </table>
+  <div class="col">
+    <ul class="list-group  text-center">
+      <li class="list-group-item list-group-item-dark">Bereit</li>
+      <li *ngFor="let readyOrder of readyOrders" class="list-group-item list-group-item-success">
+        {{readyOrder.scoreBoardNumber }}
+      </li>
+    </ul>
+<!--    <table class="table table-bordered table-striped text-center">-->
+<!--      <thead class="thead-dark">-->
+<!--      <tr>-->
+<!--        <th scope="col">Bereit zur Abholung</th>-->
+<!--      </tr>-->
+<!--      </thead>-->
+<!--      <tbody>-->
+<!--      <tr class="table-success" *ngFor="let readyOrder of readyOrders">-->
+<!--        <td>{{ readyOrder.scoreBoardNumber }}</td>-->
+<!--      </tr>-->
+<!--      </tbody>-->
+<!--    </table>-->
   </div>
 </div>
 
