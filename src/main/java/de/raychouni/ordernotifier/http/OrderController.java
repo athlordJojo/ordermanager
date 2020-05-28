@@ -49,4 +49,12 @@ public class OrderController {
         return modelMapper.map(updatedOrder, OrderDto.class);
     }
 
+    @DeleteMapping("/companies/{companyId}/orders/{orderId}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public ResponseEntity<Void> deleteOrder(@PathVariable("companyId") UUID companyId,
+                                            @PathVariable("orderId") UUID orderId) {
+        orderService.deleteOrder(companyId, orderId);
+        return ResponseEntity.noContent().build();
+    }
+
 }

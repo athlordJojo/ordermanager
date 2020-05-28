@@ -36,7 +36,7 @@
                 (click)="changeStateOfSelectedOrder('IN_PROGRESS')">In Bearbeitung
         </button>
         <button [disabled]="!selectedOrder" type="button" class="btn btn-danger"
-                (click)="changeStateOfSelectedOrder('DONE')">Abgeschlossen
+                (click)="deleteSelectedOrder(selectedOrder)">Abgeschlossen
         </button>
       </div>
     </div>

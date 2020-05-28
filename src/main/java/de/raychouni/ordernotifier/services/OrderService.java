@@ -43,4 +43,11 @@ public class OrderService {
         }).orElseThrow(() -> new EntityNotFoundException("Could not find Order with id" + orderId + " for companyId: " + companyId));
 
     }
+
+    public void deleteOrder(UUID companyId, UUID orderId) {
+        Order order = orderRepository.findFirstByUuidAndCompany_Uuid(orderId, companyId)
+                .orElseThrow(() -> new EntityNotFoundException("Could not find Order with id" + orderId + " for companyId: " + companyId));
+        orderRepository.delete(order);
+
+    }
 }

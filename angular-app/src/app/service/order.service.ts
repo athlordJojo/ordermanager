@@ -24,4 +24,8 @@ export class OrderService {
   public update(order: OrderDto): Observable<OrderDto> {
     return this.http.put<OrderDto>(this.url + "/orders/" + order.uuid, order);
   }
+
+  public delete(order: OrderDto): Observable<OrderDto> {
+    return this.http.delete<OrderDto>(this.url + "/orders/" + order.uuid);
+  }
 }

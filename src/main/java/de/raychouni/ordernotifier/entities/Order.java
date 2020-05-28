@@ -46,8 +46,7 @@ public class Order {
 
     public enum State {
         IN_PROGRESS,
-        READY,
-        DONE
+        READY
     }
 
 }

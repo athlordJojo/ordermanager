@@ -81,6 +81,18 @@ class OrderManagerApplicationTests {
     }
 
     @Test
+    @Sql({"classpath:company_test.sql", "classpath:order_test.sql"})
+    void deleteOrderOfCompany() {
+        assertEquals(1, orderRepository.count());
+        restTemplate.delete(url + "/companies/" + companyId + "/orders/" + order1Id);
+        // expect
+        ResponseEntity<OrderDto[]> response = restTemplate.getForEntity(url + "/companies/" + companyId + "/orders", OrderDto[].class);
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals(0, Objects.requireNonNull(response.getBody()).length);
+        assertEquals(0, orderRepository.count());
+    }
+
+    @Test
     @Sql({"classpath:company_test.sql"})
     void createOrdersForCompany() {
         assertEquals(0, orderRepository.count());

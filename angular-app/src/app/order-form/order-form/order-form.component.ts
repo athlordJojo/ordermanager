@@ -35,7 +35,7 @@ export class OrderFormComponent implements OnInit {
 
   loadData() {
     this.orderService.findAll().subscribe(data => {
-      this.orders = data.filter(o => o.state !== "DONE");
+      this.orders = data;
       this.orders.sort((o1, o2) => {
         return o1.state.localeCompare(o2.state.toString())
       });
@@ -56,6 +56,13 @@ export class OrderFormComponent implements OnInit {
     this.orderService.update(this.selectedOrder).subscribe(data => this.loadData());
   }
 
+  deleteSelectedOrder(order: OrderDto) {
+    this.orderService.delete(order).subscribe(
+      data => {
+        this.loadData();
+      });
+  }
+
   getClassForListItem(order: OrderDto) {
     let classForRow: string
 
@@ -69,12 +76,6 @@ export class OrderFormComponent implements OnInit {
         }
         case "READY": {
           classForRow = "list-group-item-success"
-          break;
-        }
-        case "DONE": {
-          console.log("DARK")
-          console.log(order)
-          classForRow = "list-group-item-dark"
           break;
         }
       }
