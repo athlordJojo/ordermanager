@@ -21,42 +21,30 @@
     </form>
   </div>
 </div>
-
+<hr/>
 <div class="row bg-dark">
   <div class="col-lg">
     <p class="display-4 text-white text-center">
-      Bestellungen verwalten
+      Aktive Bestellungen
     </p>
     <div class="text-center">
       <div class="btn-group btn-group-lg" role="group" aria-label="Basic example">
+        <button [disabled]="!selectedOrder" type="button" class="btn btn-primary"
+                (click)="changeStateOfSelectedOrder('READY')">Fertig gestellt
+        </button>
         <button [disabled]="!selectedOrder" type="button" class="btn btn-secondary"
                 (click)="changeStateOfSelectedOrder('IN_PROGRESS')">In Bearbeitung
         </button>
-        <button [disabled]="!selectedOrder" type="button" class="btn btn-secondary"
-                (click)="changeStateOfSelectedOrder('READY')">Bereit
-        </button>
-        <button [disabled]="!selectedOrder" type="button" class="btn btn-secondary"
-                (click)="changeStateOfSelectedOrder('DONE')">Fertig
+        <button [disabled]="!selectedOrder" type="button" class="btn btn-danger"
+                (click)="changeStateOfSelectedOrder('DONE')">Abgeschlossen
         </button>
       </div>
     </div>
 
-    <table class="table table-bordered table-striped text-center">
-      <thead class="thead-dark">
-      <tr>
-        <th scope="col">Bestellnummer</th>
-        <th scope="col">Zustand</th>
-      </tr>
-      </thead>
-      <tbody>
-
-      <tr *ngFor="let order of orders"
-          (click)="selectOrder(order)"
-          [ngClass]="getClassForRow(order)">
-        <td>{{ order.scoreBoardNumber }}</td>
-        <td>{{ order.state }}</td>
-      </tr>
-      </tbody>
-    </table>
+    <ul class=" mt-4 list-group  text-center">
+      <li (click)="selectOrder(order)" [ngClass]="getClassForListItem(order)" *ngFor="let order of orders" class="list-group-item">
+        {{order.scoreBoardNumber }}
+      </li>
+    </ul>
   </div>
 </div>

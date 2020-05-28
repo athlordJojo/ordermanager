@@ -10,7 +10,6 @@ import {OrderDto} from "../../model/order-dto";
 })
 export class OrderFormComponent implements OnInit {
 
-
   ngOnInit(): void {
     this.loadData();
   }
@@ -36,7 +35,7 @@ export class OrderFormComponent implements OnInit {
 
   loadData() {
     this.orderService.findAll().subscribe(data => {
-      this.orders = data
+      this.orders = data.filter(o => o.state !== "DONE");
       this.orders.sort((o1, o2) => {
         return o1.state.localeCompare(o2.state.toString())
       });
@@ -44,8 +43,12 @@ export class OrderFormComponent implements OnInit {
   }
 
   selectOrder(selectedOrder: OrderDto) {
-    this.selectedOrder = selectedOrder;
-    console.log("Clicked:", selectedOrder);
+    // this toggles the selected item
+    if (this.selectedOrder && this.selectedOrder.uuid == selectedOrder.uuid) {
+      this.selectedOrder = null;
+    } else {
+      this.selectedOrder = selectedOrder;
+    }
   }
 
   changeStateOfSelectedOrder(state: string) {
@@ -53,23 +56,25 @@ export class OrderFormComponent implements OnInit {
     this.orderService.update(this.selectedOrder).subscribe(data => this.loadData());
   }
 
-  getClassForRow(order: OrderDto) {
+  getClassForListItem(order: OrderDto) {
     let classForRow: string
 
     if (order === this.selectedOrder) {
-      classForRow = "table-primary";
+      classForRow = "list-group-item-primary";
     } else {
       switch (order.state) {
         case "IN_PROGRESS": {
-          classForRow = "table-warning"
+          classForRow = "list-group-item-danger"
           break;
         }
         case "READY": {
-          classForRow = "table-success"
+          classForRow = "list-group-item-success"
           break;
         }
         case "DONE": {
-          classForRow = "table-dark"
+          console.log("DARK")
+          console.log(order)
+          classForRow = "list-group-item-dark"
           break;
         }
       }
