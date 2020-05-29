@@ -1,5 +1,5 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
-import {OrderService} from "../../service/order.service";
+import {OrderApi} from "../../service/order-api.service";
 import {OrderDto} from "../../model/order-dto";
 import {timer} from 'rxjs';
 
@@ -16,7 +16,7 @@ export class OrderListComponent implements OnInit, OnDestroy {
     this.subscription.unsubscribe();
   }
 
-  constructor(private orderService: OrderService) {
+  constructor(private orderService: OrderApi) {
     const t = timer(2000, 4000);
     this.subscription = t.subscribe(v => {
       this.loadData();

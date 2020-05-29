@@ -4,7 +4,7 @@ import {OrderDto} from '../model/order-dto';
 import {Observable} from 'rxjs';
 
 @Injectable()
-export class OrderService {
+export class OrderApi {
 
   private url: string;
 

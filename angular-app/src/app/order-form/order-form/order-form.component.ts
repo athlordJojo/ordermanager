@@ -1,6 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
-import {OrderService} from '../../service/order.service';
+import {OrderApi} from '../../service/order-api.service';
 import {OrderDto} from "../../model/order-dto";
 
 @Component({
@@ -21,7 +21,7 @@ export class OrderFormComponent implements OnInit {
   constructor(
     private route: ActivatedRoute,
     private router: Router,
-    private orderService: OrderService) {
+    private orderService: OrderApi) {
     this.newOrder = new OrderDto();
     this.newOrder.state = 'IN_PROGRESS';
   }
