@@ -3,22 +3,48 @@
     <p class="display-4 text-white text-center">
       Neue Bestellung aufgeben
     </p>
-    <form (ngSubmit)="onSubmit()" #orderForm="ngForm">
-      <div class="form-group">
-        <input type="number" [(ngModel)]="newScoreBoardNumberOfNewOrder"
+    <form novalidate (ngSubmit)="onSubmit()" [formGroup]="myform" class="text-white">
+
+      <div class="form-group"
+           [ngClass]="{
+        'has-danger': scoreboardnumber.invalid && (scoreboardnumber.dirty || scoreboardnumber.touched),
+        'has-success': scoreboardnumber.valid && (scoreboardnumber.dirty || scoreboardnumber.touched)
+   }">
+        <label class="form-control-label">Bestellnummer eingeben</label>
+        <input type="number"
                class="form-control"
-               id="scoreBoardNumber"
-               name="scoreBoardNumber"
-               placeholder="Bestellnummer eingeben"
-               required #scoreBoardNumber="ngModel">
+               formControlName="scoreboardnumber"
+               required>
+        <div class="form-control-feedback"
+             *ngIf="scoreboardnumber.errors && (scoreboardnumber.dirty || scoreboardnumber.touched)">
+          <p *ngIf="scoreboardnumber.errors.required">Bestellnummer wird benötigt</p>
+        </div>
       </div>
-      <div [hidden]="orderForm.form.valid || !newScoreBoardNumberOfNewOrder" class="alert alert-danger">Bestellnummer wird
-        benötigt
-      </div>
-      <button type="submit" [disabled]="!orderForm.form.valid"
-              class="btn btn-info">Erstellen
+      <button type="submit" [disabled]="!myform.valid"
+              class="btn btn-primary">Erstellen
       </button>
     </form>
+
+
+    <!--    <form (ngSubmit)="onSubmit()" #orderForm="ngForm" [formGroup]="newOrderForm">-->
+    <!--      <div class="form-group">-->
+    <!--        <input type="number" [(ngModel)]="newScoreBoardNumberOfNewOrder"-->
+    <!--               class="form-control"-->
+    <!--               id="scoreBoardNumber"-->
+    <!--               name="scoreBoardNumber"-->
+    <!--               placeholder="Bestellnummer eingeben"-->
+    <!--               formControlName=""-->
+    <!--               required #scoreBoardNumber="ngModel">-->
+    <!--      </div>-->
+    <!--      <div [hidden]="orderForm.form.valid || !newScoreBoardNumberOfNewOrder" class="alert alert-danger">Bestellnummer wird-->
+    <!--        benötigt-->
+    <!--      </div>-->
+    <!--      <button type="submit" [disabled]="!orderForm.form.valid"-->
+    <!--              class="btn btn-info">Erstellen-->
+    <!--      </button>-->
+    <!--    </form>-->
+
+
   </div>
 </div>
 <hr/>
@@ -42,7 +68,8 @@
     </div>
 
     <ul class=" mt-4 list-group  text-center">
-      <li (click)="selectOrder(order)" [ngClass]="getClassForListItem(order)" *ngFor="let order of orders" class="list-group-item">
+      <li (click)="selectOrder(order)" [ngClass]="getClassForListItem(order)" *ngFor="let order of orders"
+          class="list-group-item">
         {{order.scoreBoardNumber }}
       </li>
     </ul>

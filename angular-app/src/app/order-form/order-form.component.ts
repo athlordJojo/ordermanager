@@ -1,6 +1,14 @@
 import {Component, OnInit} from '@angular/core';
 import {OrderApi} from '../api/order-api.service';
 import {OrderDto} from "../model/order-dto";
+import {
+  ReactiveFormsModule,
+  FormsModule,
+  FormGroup,
+  FormControl,
+  Validators,
+  FormBuilder
+} from '@angular/forms';
 
 @Component({
   selector: 'app-order-form',
@@ -8,22 +16,29 @@ import {OrderDto} from "../model/order-dto";
   styleUrls: ['./order-form.component.css']
 })
 export class OrderFormComponent implements OnInit {
+  scoreboardnumber: FormControl;
 
   ngOnInit(): void {
     this.loadData();
   }
 
-  newOrder: OrderDto;
+  myform: FormGroup;
   selectedOrder: OrderDto;
   orders: OrderDto[] = [];
-  newScoreBoardNumberOfNewOrder:number;
+
   constructor(
     private orderApi: OrderApi) {
+    this.scoreboardnumber = new FormControl('', [
+      Validators.required
+    ]);
+    this.myform = new FormGroup({
+      scoreboardnumber: this.scoreboardnumber
+    });
   }
 
   onSubmit() {
-    this.orderApi.save(this.newScoreBoardNumberOfNewOrder).subscribe(result => {
-      this.newScoreBoardNumberOfNewOrder = null;
+    this.orderApi.save(this.scoreboardnumber.value).subscribe(result => {
+      this.scoreboardnumber.reset()
       this.loadData();
     });
   }
