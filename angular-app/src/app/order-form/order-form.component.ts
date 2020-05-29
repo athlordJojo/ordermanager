@@ -16,9 +16,7 @@ export class OrderFormComponent implements OnInit {
     this.loadData();
   }
 
-
-  //TODO rename
-  myform: FormGroup;
+  newOrderForm: FormGroup;
   selectedOrder: OrderDto;
   orders: OrderDto[] = [];
 
@@ -30,7 +28,7 @@ export class OrderFormComponent implements OnInit {
       Validators.min(0),
       this.uniqueScoreBoardValidator
     ]);
-    this.myform = new FormGroup({
+    this.newOrderForm = new FormGroup({
       scoreboardnumber: this.scoreboardnumber
     });
   }
