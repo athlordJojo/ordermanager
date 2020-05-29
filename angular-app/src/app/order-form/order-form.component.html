@@ -5,14 +5,14 @@
     </p>
     <form (ngSubmit)="onSubmit()" #orderForm="ngForm">
       <div class="form-group">
-        <input type="number" [(ngModel)]="newOrder.scoreBoardNumber"
+        <input type="number" [(ngModel)]="newScoreBoardNumberOfNewOrder"
                class="form-control"
                id="scoreBoardNumber"
                name="scoreBoardNumber"
                placeholder="Bestellnummer eingeben"
                required #scoreBoardNumber="ngModel">
       </div>
-      <div [hidden]="orderForm.form.valid || !newOrder.scoreBoardNumber" class="alert alert-danger">Bestellnummer wird
+      <div [hidden]="orderForm.form.valid || !newScoreBoardNumberOfNewOrder" class="alert alert-danger">Bestellnummer wird
         benötigt
       </div>
       <button type="submit" [disabled]="!orderForm.form.valid"

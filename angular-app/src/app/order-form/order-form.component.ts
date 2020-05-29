@@ -1,7 +1,6 @@
 import {Component, OnInit} from '@angular/core';
-import {ActivatedRoute, Router} from '@angular/router';
-import {OrderApi} from '../../service/order-api.service';
-import {OrderDto} from "../../model/order-dto";
+import {OrderApi} from '../api/order-api.service';
+import {OrderDto} from "../model/order-dto";
 
 @Component({
   selector: 'app-order-form',
@@ -17,24 +16,20 @@ export class OrderFormComponent implements OnInit {
   newOrder: OrderDto;
   selectedOrder: OrderDto;
   orders: OrderDto[] = [];
-
+  newScoreBoardNumberOfNewOrder:number;
   constructor(
-    private route: ActivatedRoute,
-    private router: Router,
-    private orderService: OrderApi) {
-    this.newOrder = new OrderDto();
-    this.newOrder.state = 'IN_PROGRESS';
+    private orderApi: OrderApi) {
   }
 
   onSubmit() {
-    this.orderService.save(this.newOrder).subscribe(result => {
-      this.newOrder.scoreBoardNumber = null;
+    this.orderApi.save(this.newScoreBoardNumberOfNewOrder).subscribe(result => {
+      this.newScoreBoardNumberOfNewOrder = null;
       this.loadData();
     });
   }
 
   loadData() {
-    this.orderService.findAll().subscribe(data => {
+    this.orderApi.findAll().subscribe(data => {
       this.orders = data;
       this.orders.sort((o1, o2) => {
         return o1.state.localeCompare(o2.state.toString())
@@ -53,11 +48,11 @@ export class OrderFormComponent implements OnInit {
 
   changeStateOfSelectedOrder(state: string) {
     this.selectedOrder.state = state;
-    this.orderService.update(this.selectedOrder).subscribe(data => this.loadData());
+    this.orderApi.update(this.selectedOrder).subscribe(data => this.loadData());
   }
 
   deleteSelectedOrder(order: OrderDto) {
-    this.orderService.delete(order).subscribe(
+    this.orderApi.delete(order).subscribe(
       data => {
         this.loadData();
       });
