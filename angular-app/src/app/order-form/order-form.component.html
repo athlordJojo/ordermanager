@@ -3,48 +3,37 @@
     <p class="display-4 text-white text-center">
       Neue Bestellung aufgeben
     </p>
-    <form novalidate (ngSubmit)="onSubmit()" [formGroup]="myform" class="text-white">
-
+    <form (ngSubmit)="onSubmit()" [formGroup]="myform" class="text-white">
       <div class="form-group"
-           [ngClass]="{
-        'has-danger': scoreboardnumber.invalid && (scoreboardnumber.dirty || scoreboardnumber.touched),
-        'has-success': scoreboardnumber.valid && (scoreboardnumber.dirty || scoreboardnumber.touched)
-   }">
-        <label class="form-control-label">Bestellnummer eingeben</label>
+      >
         <input type="number"
                class="form-control"
+               placeholder="Bestellnummer eingeben"
                formControlName="scoreboardnumber"
-               required>
+               [ngClass]="{
+        'is-invalid': scoreboardnumber.invalid && (scoreboardnumber.dirty || scoreboardnumber.touched),
+        'is-valid': scoreboardnumber.valid && (scoreboardnumber.dirty || scoreboardnumber.touched)
+   }"
+        >
         <div class="form-control-feedback"
              *ngIf="scoreboardnumber.errors && (scoreboardnumber.dirty || scoreboardnumber.touched)">
           <p *ngIf="scoreboardnumber.errors.required">Bestellnummer wird benötigt</p>
+          <p *ngIf="scoreboardnumber.errors.scoreBoardNumberIsUsed">Bestellnummer wird bereits verwendet</p>
+          <p *ngIf="scoreboardnumber.errors.min">Bestellnummer darf nicht negativ sein</p>
         </div>
       </div>
-      <button type="submit" [disabled]="!myform.valid"
-              class="btn btn-primary">Erstellen
-      </button>
+
+      <div class="text-center">
+        <div class="btn-group btn-group-lg" role="group">
+          <button type="submit" [disabled]="!myform.valid"
+                  class="btn btn-primary">Erstellen
+          </button>
+          <button [disabled]="!scoreboardnumber.value" type="button" class="btn btn-secondary"
+                  (click)="resetForm()">Abbrechen
+          </button>
+        </div>
+      </div>
     </form>
-
-
-    <!--    <form (ngSubmit)="onSubmit()" #orderForm="ngForm" [formGroup]="newOrderForm">-->
-    <!--      <div class="form-group">-->
-    <!--        <input type="number" [(ngModel)]="newScoreBoardNumberOfNewOrder"-->
-    <!--               class="form-control"-->
-    <!--               id="scoreBoardNumber"-->
-    <!--               name="scoreBoardNumber"-->
-    <!--               placeholder="Bestellnummer eingeben"-->
-    <!--               formControlName=""-->
-    <!--               required #scoreBoardNumber="ngModel">-->
-    <!--      </div>-->
-    <!--      <div [hidden]="orderForm.form.valid || !newScoreBoardNumberOfNewOrder" class="alert alert-danger">Bestellnummer wird-->
-    <!--        benötigt-->
-    <!--      </div>-->
-    <!--      <button type="submit" [disabled]="!orderForm.form.valid"-->
-    <!--              class="btn btn-info">Erstellen-->
-    <!--      </button>-->
-    <!--    </form>-->
-
-
   </div>
 </div>
 <hr/>
@@ -54,7 +43,7 @@
       Aktive Bestellungen
     </p>
     <div class="text-center">
-      <div class="btn-group btn-group-lg" role="group" aria-label="Basic example">
+      <div class="btn-group btn-group-lg" role="group">
         <button [disabled]="!selectedOrder" type="button" class="btn btn-primary"
                 (click)="changeStateOfSelectedOrder('READY')">Fertig gestellt
         </button>

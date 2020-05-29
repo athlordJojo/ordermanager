@@ -1,14 +1,8 @@
 import {Component, OnInit} from '@angular/core';
 import {OrderApi} from '../api/order-api.service';
 import {OrderDto} from "../model/order-dto";
-import {
-  ReactiveFormsModule,
-  FormsModule,
-  FormGroup,
-  FormControl,
-  Validators,
-  FormBuilder
-} from '@angular/forms';
+import {FormGroup, FormControl, Validators, ValidatorFn, ValidationErrors} from '@angular/forms';
+import {OrderService} from "../service/order.service";
 
 @Component({
   selector: 'app-order-form',
@@ -22,14 +16,19 @@ export class OrderFormComponent implements OnInit {
     this.loadData();
   }
 
+
+  //TODO rename
   myform: FormGroup;
   selectedOrder: OrderDto;
   orders: OrderDto[] = [];
 
   constructor(
-    private orderApi: OrderApi) {
+    private orderApi: OrderApi,
+    private orderService: OrderService) {
     this.scoreboardnumber = new FormControl('', [
-      Validators.required
+      Validators.required,
+      Validators.min(0),
+      this.uniqueScoreBoardValidator
     ]);
     this.myform = new FormGroup({
       scoreboardnumber: this.scoreboardnumber
@@ -42,6 +41,17 @@ export class OrderFormComponent implements OnInit {
       this.loadData();
     });
   }
+
+  uniqueScoreBoardValidator: ValidatorFn = (control: FormGroup): ValidationErrors | null => {
+    const enteredValue = control.value;
+    if (enteredValue === '' || !enteredValue) {
+      return null;
+    }
+    let isScoreBoardNumberUsed = this.orderService.existOrderWithScoreboardNumber(this.orders, control.value);
+
+    return isScoreBoardNumberUsed ? {'scoreBoardNumberIsUsed': true} : null;
+  };
+
 
   loadData() {
     this.orderApi.findAll().subscribe(data => {
@@ -91,5 +101,9 @@ export class OrderFormComponent implements OnInit {
       }
     }
     return classForRow;
+  }
+
+  resetForm() {
+    this.scoreboardnumber.reset();
   }
 }
