@@ -5,7 +5,6 @@ import de.raychouni.ordernotifier.entities.Order;
 import de.raychouni.ordernotifier.repos.CompanyRepository;
 import de.raychouni.ordernotifier.repos.OrderRepository;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.PathVariable;
 
 import javax.persistence.EntityNotFoundException;
 import java.util.List;
@@ -13,7 +12,6 @@ import java.util.UUID;
 
 @Service
 public class OrderService {
-
     private final OrderRepository orderRepository;
     private final CompanyRepository companyRepository;
 
@@ -48,6 +46,5 @@ public class OrderService {
         Order order = orderRepository.findFirstByUuidAndCompany_Uuid(orderId, companyId)
                 .orElseThrow(() -> new EntityNotFoundException("Could not find Order with id" + orderId + " for companyId: " + companyId));
         orderRepository.delete(order);
-
     }
 }

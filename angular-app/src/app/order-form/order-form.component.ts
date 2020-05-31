@@ -89,7 +89,7 @@ export class OrderFormComponent implements OnInit {
     } else {
       switch (order.state) {
         case "IN_PROGRESS": {
-          classForRow = "list-group-item-danger"
+          classForRow = "list-group-item-secondary"
           break;
         }
         case "READY": {

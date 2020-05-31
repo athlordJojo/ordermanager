@@ -3,6 +3,7 @@ import {OrderApi} from "../api/order-api.service";
 import {OrderDto} from "../model/order-dto";
 import {timer} from 'rxjs';
 import {OrderService} from "../service/order.service";
+import {AudioService} from "../service/audio.service";
 
 @Component({
   selector: 'app-order-list',
@@ -16,7 +17,9 @@ export class OrderListComponent implements OnInit, OnDestroy {
     this.subscription.unsubscribe();
   }
 
-  constructor(private orderApi: OrderApi, private orderService: OrderService) {
+  constructor(private orderApi: OrderApi,
+              private orderService: OrderService,
+              private audioService: AudioService) {
     const t = timer(2000, 4000);
     this.subscription = t.subscribe(v => {
       this.loadData();
@@ -35,7 +38,13 @@ export class OrderListComponent implements OnInit, OnDestroy {
     this.orderApi.findAll().subscribe(data => {
       this.inProgressOrders = this.orderService.filterAndSort(data, 'IN_PROGRESS');
       this.readyOrders = this.orderService.filterAndSort(data, "READY");
-      this.scoreBoardNumberOflastReadyOrder = this.readyOrders.length > 0 ? this.readyOrders[0].scoreBoardNumber.toString() : '-';
+      let newScoreboardNumber = this.readyOrders.length > 0 ? this.readyOrders[0].scoreBoardNumber.toString() : '-';
+
+      let didScoreboardNumberChanged = this.scoreBoardNumberOflastReadyOrder !== newScoreboardNumber;
+      if (this.scoreBoardNumberOflastReadyOrder && newScoreboardNumber !== '-' && didScoreboardNumberChanged) {
+        this.audioService.playSound(newScoreboardNumber);
+      }
+      this.scoreBoardNumberOflastReadyOrder = newScoreboardNumber;
     });
   }
 }

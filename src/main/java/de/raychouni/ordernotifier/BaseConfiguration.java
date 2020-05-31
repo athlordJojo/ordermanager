@@ -1,5 +1,6 @@
 package de.raychouni.ordernotifier;
 
+import com.google.common.eventbus.EventBus;
 import org.modelmapper.ModelMapper;
 import org.springframework.boot.web.server.ErrorPage;
 import org.springframework.boot.web.server.WebServerFactoryCustomizer;
@@ -18,6 +19,7 @@ public class BaseConfiguration extends WebMvcConfigurerAdapter {
     public void addViewControllers(ViewControllerRegistry registry) {
         registry.addViewController("/notFound").setViewName("forward:/index.html");
     }
+
     @Bean
     public WebServerFactoryCustomizer<ConfigurableServletWebServerFactory> containerCustomizer() {
         return container -> {
