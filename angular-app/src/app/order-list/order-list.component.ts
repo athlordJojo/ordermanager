@@ -20,10 +20,10 @@ export class OrderListComponent implements OnInit, OnDestroy {
   constructor(private orderApi: OrderApi,
               private orderService: OrderService,
               private audioService: AudioService) {
-    const t = timer(2000, 4000);
-    this.subscription = t.subscribe(v => {
-      this.loadData();
-    });
+    // const t = timer(2000, 4000);
+    // this.subscription = t.subscribe(v => {
+    //   this.loadData();
+    // });
   }
 
   scoreBoardNumberOflastReadyOrder: string;
@@ -31,6 +31,16 @@ export class OrderListComponent implements OnInit, OnDestroy {
   inProgressOrders: OrderDto[];
 
   ngOnInit() {
+    var that = this;
+    this.orderApi.updates.subscribe({
+      next(update) {
+        console.log('Received order update in component: ', update);
+        that.loadData();
+      },
+      error(msg) {
+        console.log('order update in component: ', msg);
+      }
+    })
     this.loadData();
   }
 
