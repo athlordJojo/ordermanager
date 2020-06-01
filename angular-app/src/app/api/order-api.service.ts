@@ -35,7 +35,6 @@ export class OrderApi implements OnDestroy {
     let callback = message => {
       console.debug("received order update")
       let updateBody = JSON.parse(message.body);
-      console.debug(updateBody)
       observer.next(updateBody)
     };
     if (this.client.connected) {
