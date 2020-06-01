@@ -15,6 +15,7 @@ export class OrderListComponent implements OnDestroy {
 
   ngOnDestroy(): void {
     console.debug("destroy")
+    // TODO seems not to work. Multiple subscriber are alive after moving from one  path to another
     this.orderUpdateSubscription.unsubscribe();
   }
 
@@ -38,20 +39,6 @@ export class OrderListComponent implements OnDestroy {
   readyOrders: OrderDto[];
   inProgressOrders: OrderDto[];
 
-  // ngOnInit() {
-  //   var that = this;
-  //   this.orderUpdateSubscription = this.orderApi.updates.subscribe({
-  //     next(update) {
-  //       console.log('Received order update in component: ', update);
-  //       that.loadData();
-  //     },
-  //     error(msg) {
-  //       console.error('order update in component: ', msg);
-  //     }
-  //   })
-  //   this.loadData();
-  // }
-
   loadData() {
     this.orderApi.findAll().subscribe(data => {
       this.inProgressOrders = this.orderService.filterAndSort(data, 'IN_PROGRESS');
@@ -64,7 +51,6 @@ export class OrderListComponent implements OnDestroy {
         this.audioService.playSound(newScoreboardNumber);
       }
       this.scoreBoardNumberOflastReadyOrder = newScoreboardNumber;
-      // this.cdr.detectChanges();
     });
   }
 }

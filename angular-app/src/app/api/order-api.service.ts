@@ -49,7 +49,7 @@ export class OrderApi implements OnDestroy {
     }
     return {
       unsubscribe() {
-        // observer.unsubscribe();
+        observer.unsubscribe();
       }
     };
   });
