@@ -1,6 +1,12 @@
 <!doctype html>
 <html lang="en">
+<!--Javascript bullshit. global is the window object in nodejs apps... hacky way:
+https://github.com/sockjs/sockjs-client/issues/439
+-->
 <head>
+  <script>
+    var global = window;
+  </script>
   <meta charset="utf-8">
   <title>Ordermanager</title>
   <base href="/">

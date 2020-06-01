@@ -1,6 +1,5 @@
-package de.raychouni.ordernotifier;
+package de.raychouni.ordernotifier.config;
 
-import com.google.common.eventbus.EventBus;
 import org.modelmapper.ModelMapper;
 import org.springframework.boot.web.server.ErrorPage;
 import org.springframework.boot.web.server.WebServerFactoryCustomizer;

@@ -3,27 +3,32 @@ package de.raychouni.ordernotifier.http;
 import de.raychouni.ordernotifier.dtos.OrderDto;
 import de.raychouni.ordernotifier.entities.Order;
 import de.raychouni.ordernotifier.services.OrderService;
+import de.raychouni.ordernotifier.services.OrderUpdate;
+import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
+import org.springframework.context.event.EventListener;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-import static org.springframework.web.bind.annotation.RequestMethod.*;
-
 @RestController
 @CrossOrigin
+@Slf4j
 public class OrderController {
 
     private final OrderService orderService;
     private final ModelMapper modelMapper;
+    private SimpMessagingTemplate simpMessagingTemplate;
 
-    public OrderController(OrderService orderService, ModelMapper modelMapper) {
+    public OrderController(OrderService orderService, ModelMapper modelMapper, SimpMessagingTemplate simpMessagingTemplate) {
         this.orderService = orderService;
         this.modelMapper = modelMapper;
+        this.simpMessagingTemplate = simpMessagingTemplate;
     }
 
     @GetMapping("/companies/{companyId}/orders")
@@ -55,6 +60,11 @@ public class OrderController {
                                             @PathVariable("orderId") UUID orderId) {
         orderService.deleteOrder(companyId, orderId);
         return ResponseEntity.noContent().build();
+    }
+
+    @EventListener
+    public void onEntityUpdate(OrderUpdate orderUpdate) {
+        simpMessagingTemplate.convertAndSend("/topic/orders", orderUpdate);
     }
 
 }
