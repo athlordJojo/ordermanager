@@ -12,14 +12,16 @@ export class OrderApi {
 
   constructor(private http: HttpClient) {
     // this.url = '/companies/B28C343D-03C1-4FF1-90B9-5DDA8AFD3BFE';
-    this.url = 'http://localhost:8080/companies/B28C343D-03C1-4FF1-90B9-5DDA8AFD3BFE';
+    this.url = 'http://localhost/companies/B28C343D-03C1-4FF1-90B9-5DDA8AFD3BFE';
 
-    const conn = Stomp.over(new SockJS('http://localhost:8080/ordermanager'));
-    conn.connect({}, () => {
+    const client = Stomp.over(new SockJS('http://localhost:80/ordermanager'));
+    client.reconnect_delay = 5000;
+    client.connect({}, () => {
       // We are connected
       console.log("connected");
-      conn.subscribe("/topic/orders", message => {
+      client.subscribe("/topic/orders", message => {
         console.log("received update")
+        console.log(JSON.parse(message.body))
       })
     });
   }
