@@ -7,9 +7,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.boot.test.mock.mockito.MockBean;
-
-import static org.junit.jupiter.api.Assertions.*;
+import org.springframework.context.ApplicationEventPublisher;
 
 @ExtendWith(MockitoExtension.class)
 class OrderServiceTest {
@@ -20,11 +18,14 @@ class OrderServiceTest {
     @Mock
     OrderRepository orderRepository;
 
+    @Mock
+    ApplicationEventPublisher applicationPushPublisher;
+
     private OrderService orderService;
 
     @BeforeEach
     void setUp() {
-        orderService = new OrderService(orderRepository, companyRepository);
+        orderService = new OrderService(orderRepository, companyRepository, applicationPushPublisher);
     }
 
     @Test

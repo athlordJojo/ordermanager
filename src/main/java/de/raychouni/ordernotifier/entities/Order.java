@@ -12,7 +12,8 @@ import java.util.UUID;
 
 @Entity
 @Data
-@Table(name = "order_table")
+@Table(name = "order_table", uniqueConstraints =
+@UniqueConstraint(columnNames = {"company_uuid", "scoreBoardNumber"}))
 @EntityListeners(AuditingEntityListener.class)
 public class Order {
 

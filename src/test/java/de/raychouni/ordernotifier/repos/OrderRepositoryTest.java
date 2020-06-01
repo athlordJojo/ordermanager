@@ -1,9 +1,11 @@
 package de.raychouni.ordernotifier.repos;
 
+import de.raychouni.ordernotifier.entities.Company;
 import de.raychouni.ordernotifier.entities.Order;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.test.context.jdbc.Sql;
 
 import java.util.Optional;
@@ -40,7 +42,7 @@ class OrderRepositoryTest {
 
     @Test
     @Sql({"classpath:company_test.sql", "classpath:additional_company_test.sql", "classpath:order_test.sql"})
-    void findFirstByUuidAndCompanyUuid_withValidMapping_expectResult(){
+    void findFirstByUuidAndCompanyUuid_withValidMapping_expectResult() {
         Optional<Order> result = orderRepository.findFirstByUuidAndCompany_Uuid(order1Id, companyId);
         assertTrue(result.isPresent());
         Order order = result.get();
@@ -49,8 +51,24 @@ class OrderRepositoryTest {
 
     @Test
     @Sql({"classpath:company_test.sql", "classpath:additional_company_test.sql", "classpath:order_test.sql"})
-    void findFirstByUuidAndCompanyUuid_withNonExistingMapping_expectEmptyResult(){
+    void findFirstByUuidAndCompanyUuid_withNonExistingMapping_expectEmptyResult() {
         Optional<Order> result = orderRepository.findFirstByUuidAndCompany_Uuid(order1Id, companyWithoutOrderId);
         assertTrue(result.isEmpty());
+    }
+
+    @Test
+    @Sql({"classpath:company_test.sql", "classpath:order_test.sql"})
+    void checkConstraintComapnyUUid_ScoreBoardnumber() {
+        Optional<Order> result = orderRepository.findFirstByUuidAndCompany_Uuid(order1Id, companyId);
+        // create order with same company and same scoreboardnumber
+        Order order = new Order();
+        Order existingOrder = result.get();
+        Company company = existingOrder.getCompany();
+        order.setCompany(company);
+        order.setScoreBoardNumber(existingOrder.getScoreBoardNumber());
+        order.setState(Order.State.IN_PROGRESS);
+        assertThrows(DataIntegrityViolationException.class, () -> {
+            orderRepository.saveAndFlush(order);
+        });
     }
 }
