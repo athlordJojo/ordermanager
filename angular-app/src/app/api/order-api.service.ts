@@ -17,7 +17,7 @@ export class OrderApi implements OnDestroy {
     this.url = 'http://localhost/companies/B28C343D-03C1-4FF1-90B9-5DDA8AFD3BFE';
 
 
-    this.client = Stomp.over(function(){
+    this.client = Stomp.over(function () {
       return new SockJS('http://localhost:80/liveupdates')
     });
 
@@ -32,19 +32,24 @@ export class OrderApi implements OnDestroy {
   }
 
   public updates = new Observable((observer) => {
-    this.client.connect({}, () => {
-      // We are connected
-      console.log("connected via websocket");
-      this.client.subscribe("/topic/orders", message => {
-        console.debug("received order update")
-        let updateBody = JSON.parse(message.body);
-        console.debug(updateBody)
-        observer.next(updateBody)
-      })
-    });
+    let callback = message => {
+      console.debug("received order update")
+      let updateBody = JSON.parse(message.body);
+      console.debug(updateBody)
+      observer.next(updateBody)
+    };
+    if (this.client.connected) {
+      this.client.subscribe("/topic/orders", callback)
+    } else {
+      this.client.connect({}, () => {
+        // We are connected
+        console.log("connected via websocket");
+        this.client.subscribe("/topic/orders", callback)
+      });
+    }
     return {
       unsubscribe() {
-        // navigator.geolocation.clearWatch(watchId);
+        // observer.unsubscribe();
       }
     };
   });

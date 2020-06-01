@@ -1,4 +1,4 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
+import {ApplicationRef, ChangeDetectorRef, Component, NgZone, OnDestroy, OnInit} from '@angular/core';
 import {OrderApi} from "../api/order-api.service";
 import {OrderDto} from "../model/order-dto";
 import {OrderService} from "../service/order.service";
@@ -15,7 +15,7 @@ export class OrderListComponent implements OnDestroy {
 
   ngOnDestroy(): void {
     console.debug("destroy")
-    // this.orderUpdateSubscription.unsubscribe();
+    this.orderUpdateSubscription.unsubscribe();
   }
 
   constructor(private orderApi: OrderApi,
@@ -57,12 +57,14 @@ export class OrderListComponent implements OnDestroy {
       this.inProgressOrders = this.orderService.filterAndSort(data, 'IN_PROGRESS');
       this.readyOrders = this.orderService.filterAndSort(data, "READY");
       let newScoreboardNumber = this.readyOrders.length > 0 ? this.readyOrders[0].scoreBoardNumber.toString() : '-';
-
+      console.log(this.inProgressOrders)
+      console.log(this.readyOrders)
       let didScoreboardNumberChanged = this.scoreBoardNumberOflastReadyOrder !== newScoreboardNumber;
       if (this.scoreBoardNumberOflastReadyOrder && newScoreboardNumber !== '-' && didScoreboardNumberChanged) {
         this.audioService.playSound(newScoreboardNumber);
       }
       this.scoreBoardNumberOflastReadyOrder = newScoreboardNumber;
+      // this.cdr.detectChanges();
     });
   }
 }
