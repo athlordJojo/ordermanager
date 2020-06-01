@@ -1,4 +1,4 @@
-import {Injectable} from '@angular/core';
+import {Injectable, OnDestroy} from '@angular/core';
 import {HttpClient, HttpHeaders} from '@angular/common/http';
 import {OrderDto} from '../model/order-dto';
 import {Observable} from 'rxjs';
@@ -6,32 +6,39 @@ import * as SockJS from "sockjs-client";
 import {CompatClient, Stomp} from "@stomp/stompjs";
 
 @Injectable()
-export class OrderApi {
+export class OrderApi implements OnDestroy {
 
   private readonly url: string;
-  private client: CompatClient;
+  private readonly client: CompatClient;
 
   constructor(private http: HttpClient) {
     // this.url = '/companies/B28C343D-03C1-4FF1-90B9-5DDA8AFD3BFE';
     // var host = "http://localhost"
     this.url = 'http://localhost/companies/B28C343D-03C1-4FF1-90B9-5DDA8AFD3BFE';
 
-    this.client = Stomp.over(new SockJS('http://localhost:80/liveupdates'));
+
+    this.client = Stomp.over(function(){
+      return new SockJS('http://localhost:80/liveupdates')
+    });
+
     this.client.reconnect_delay = 5000;
-    // this.client.connect({}, () => {
-    //   // We are connected
-    //   console.log("connected");
-    // });
+  }
+
+  ngOnDestroy(): void {
+    if (this.client != null && this.client.connected) {
+      console.debug("Disconnecting stomp client")
+      this.client.disconnect();
+    }
   }
 
   public updates = new Observable((observer) => {
     this.client.connect({}, () => {
       // We are connected
-      console.log("connected");
+      console.log("connected via websocket");
       this.client.subscribe("/topic/orders", message => {
-        console.log("received order update")
+        console.debug("received order update")
         let updateBody = JSON.parse(message.body);
-        console.log(updateBody)
+        console.debug(updateBody)
         observer.next(updateBody)
       })
     });

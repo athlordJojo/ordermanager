@@ -18,14 +18,12 @@ import static de.raychouni.ordernotifier.services.OrderUpdate.CHANGE_TYPE.*;
 public class OrderService {
     private final OrderRepository orderRepository;
     private final CompanyRepository companyRepository;
+    private final ApplicationEventPublisher eventPublisher;
 
-
-    @Autowired
-    private ApplicationEventPublisher applicationEventPublisher;
-
-    public OrderService(OrderRepository orderRepository, CompanyRepository companyRepository) {
+    public OrderService(OrderRepository orderRepository, CompanyRepository companyRepository, ApplicationEventPublisher eventPublisher) {
         this.orderRepository = orderRepository;
         this.companyRepository = companyRepository;
+        this.eventPublisher = eventPublisher;
     }
 
     public List<Order> getAllOrdersByCompanyId(UUID customerId) {
@@ -60,8 +58,6 @@ public class OrderService {
     }
 
     private void publishChange(OrderUpdate.CHANGE_TYPE deleted2) {
-        applicationEventPublisher.publishEvent(new OrderUpdate(this, deleted2));
+        eventPublisher.publishEvent(new OrderUpdate(this, deleted2));
     }
-
-
 }

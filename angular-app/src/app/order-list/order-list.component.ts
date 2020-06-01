@@ -1,48 +1,56 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {OrderApi} from "../api/order-api.service";
 import {OrderDto} from "../model/order-dto";
-import {timer} from 'rxjs';
 import {OrderService} from "../service/order.service";
 import {AudioService} from "../service/audio.service";
+import {Subscription} from "rxjs";
 
 @Component({
   selector: 'app-order-list',
   templateUrl: './order-list.component.html',
   styleUrls: ['./order-list.component.css']
 })
-export class OrderListComponent implements OnInit, OnDestroy {
-  subscription;
+export class OrderListComponent implements OnDestroy {
+  private orderUpdateSubscription: Subscription;
 
   ngOnDestroy(): void {
-    this.subscription.unsubscribe();
+    console.debug("destroy")
+    // this.orderUpdateSubscription.unsubscribe();
   }
 
   constructor(private orderApi: OrderApi,
               private orderService: OrderService,
               private audioService: AudioService) {
-    // const t = timer(2000, 4000);
-    // this.subscription = t.subscribe(v => {
-    //   this.loadData();
-    // });
+    var that = this;
+    this.orderUpdateSubscription = this.orderApi.updates.subscribe({
+      next(update) {
+        console.log('Received order update in component: ', update);
+        that.loadData();
+      },
+      error(msg) {
+        console.error('order update in component: ', msg);
+      }
+    })
+    this.loadData();
   }
 
   scoreBoardNumberOflastReadyOrder: string;
   readyOrders: OrderDto[];
   inProgressOrders: OrderDto[];
 
-  ngOnInit() {
-    var that = this;
-    this.orderApi.updates.subscribe({
-      next(update) {
-        console.log('Received order update in component: ', update);
-        that.loadData();
-      },
-      error(msg) {
-        console.log('order update in component: ', msg);
-      }
-    })
-    this.loadData();
-  }
+  // ngOnInit() {
+  //   var that = this;
+  //   this.orderUpdateSubscription = this.orderApi.updates.subscribe({
+  //     next(update) {
+  //       console.log('Received order update in component: ', update);
+  //       that.loadData();
+  //     },
+  //     error(msg) {
+  //       console.error('order update in component: ', msg);
+  //     }
+  //   })
+  //   this.loadData();
+  // }
 
   loadData() {
     this.orderApi.findAll().subscribe(data => {
