@@ -58,6 +58,6 @@ public class OrderService {
     }
 
     private void publishChange(OrderUpdate.CHANGE_TYPE deleted2) {
-        eventPublisher.publishEvent(new OrderUpdate(this, deleted2));
+        eventPublisher.publishEvent(new OrderUpdate(deleted2));
     }
 }

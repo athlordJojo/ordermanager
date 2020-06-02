@@ -1,14 +1,12 @@
 package de.raychouni.ordernotifier.services;
 
 import lombok.Getter;
-import org.springframework.context.ApplicationEvent;
 
 @Getter
-public class OrderUpdate extends ApplicationEvent {
+public class OrderUpdate{
     CHANGE_TYPE change;
 
-    public OrderUpdate(Object source, CHANGE_TYPE change) {
-        super(source);
+    public OrderUpdate(CHANGE_TYPE change) {
         this.change = change;
     }
 

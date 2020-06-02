@@ -13,7 +13,7 @@
       <div class="display-4">
         <li *ngFor="let inProgressOrders of chunksOfInProgressOrders" class="list-group-item list-group-item-secondary">
           <span *ngFor="let inProgressOrder of inProgressOrders"
-                class="badge badge-secondary ml-4 mr-4">{{inProgressOrder.scoreBoardNumber }}</span>
+                class="badge badge-secondary ml-3 mr-3">{{inProgressOrder.scoreBoardNumber }}</span>
         </li>
       </div>
     </ul>
@@ -23,7 +23,7 @@
       <li class="list-group-item list-group-item-dark">Bereit</li>
       <div class="display-4">
         <li *ngFor="let readyOrders of chunkOfReadyOrders" class="list-group-item list-group-item-success">
-          <span *ngFor="let readyOrder of readyOrders" class=" badge badge-success ml-4 mr-4">{{readyOrder.scoreBoardNumber }}</span>
+          <span *ngFor="let readyOrder of readyOrders" class=" badge badge-success ml-3 mr-3">{{readyOrder.scoreBoardNumber }}</span>
         </li>
       </div>
     </ul>
