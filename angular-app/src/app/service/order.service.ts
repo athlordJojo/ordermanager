@@ -9,7 +9,7 @@ export class OrderService {
   constructor() {
   }
 
-  existOrderWithScoreboardNumber(orders:OrderDto[], scoredboardNumber:number){
+  existOrderWithScoreboardNumber(orders: OrderDto[], scoredboardNumber: number) {
     return orders.find(order => order.scoreBoardNumber == scoredboardNumber) != null;
   }
 
@@ -27,5 +27,16 @@ export class OrderService {
     }
 
     return orders.filter(order => order.state == state).sort(sortOrderByModifiedDate);
+  }
+
+  sliceIntoSubArrays(orders: OrderDto[], chunk = 3): Array<Array<OrderDto>> {
+    let i, j, temparray;
+    let ordersOfOrders = Array<Array<OrderDto>>();
+    for (i = 0, j = orders.length; i < j; i += chunk) {
+      temparray = orders.slice(i, i + chunk);
+      ordersOfOrders.push(temparray);
+    }
+
+    return ordersOfOrders;
   }
 }

@@ -10,7 +10,7 @@ import {OrderService} from "../service/order.service";
   styleUrls: ['./order-form.component.css']
 })
 export class OrderFormComponent implements OnInit {
-  scoreboardnumber: FormControl;
+  newScoreBoardNumberForm: FormControl;
 
   ngOnInit(): void {
     this.loadData();
@@ -23,19 +23,19 @@ export class OrderFormComponent implements OnInit {
   constructor(
     private orderApi: OrderApi,
     private orderService: OrderService) {
-    this.scoreboardnumber = new FormControl('', [
+    this.newScoreBoardNumberForm = new FormControl('', [
       Validators.required,
       Validators.min(0),
       this.uniqueScoreBoardValidator
     ]);
     this.newOrderForm = new FormGroup({
-      scoreboardnumber: this.scoreboardnumber
+      scoreboardnumber: this.newScoreBoardNumberForm
     });
   }
 
-  onSubmit() {
-    this.orderApi.save(this.scoreboardnumber.value).subscribe(result => {
-      this.scoreboardnumber.reset()
+  createNewOrder() {
+    this.orderApi.save(this.newScoreBoardNumberForm.value).subscribe(result => {
+      this.newScoreBoardNumberForm.reset()
       this.loadData();
     });
   }
@@ -60,7 +60,7 @@ export class OrderFormComponent implements OnInit {
     })
   }
 
-  selectOrder(selectedOrder: OrderDto) {
+  toggleOrder(selectedOrder: OrderDto) {
     // this toggles the selected item
     if (this.selectedOrder && this.selectedOrder.uuid == selectedOrder.uuid) {
       this.selectedOrder = null;
@@ -72,6 +72,7 @@ export class OrderFormComponent implements OnInit {
   changeStateOfSelectedOrder(state: string) {
     this.selectedOrder.state = state;
     this.orderApi.update(this.selectedOrder).subscribe(data => this.loadData());
+    this.toggleOrder(this.selectedOrder);
   }
 
   deleteSelectedOrder(order: OrderDto) {
@@ -102,6 +103,6 @@ export class OrderFormComponent implements OnInit {
   }
 
   resetForm() {
-    this.scoreboardnumber.reset();
+    this.newScoreBoardNumberForm.reset();
   }
 }

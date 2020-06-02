@@ -1,29 +1,42 @@
-import { Injectable } from '@angular/core';
+import {Injectable} from '@angular/core';
+
+enum MODE {
+  OFF,
+  SOUND,
+  SPEAK
+}
 
 @Injectable({
   providedIn: 'root'
 })
 export class AudioService {
 
-  private bellSound;
+  private sound;
+  private readonly spechSynthesis;
+  private readonly currentMode: MODE;
 
   constructor() {
-    this.bellSound = new Audio("../assets/doorbell.mp3");
-    this.bellSound.load();
-    this.bellSound.autoplay = false;
-    this.bellSound.muted = true
+    this.sound = new Audio("../assets/doorbell.mp3");
+    this.sound.load();
+    this.sound.autoplay = false;
+    this.sound.muted = true
+
+    this.spechSynthesis = new SpeechSynthesisUtterance();
+    this.spechSynthesis.lang = 'de-DE';
+    this.spechSynthesis.volume = 1; // 0 to 1
+    this.spechSynthesis.rate = 1; // 0.1 to 10
+    this.spechSynthesis.pitch = 2; //0 to 2
+
+    this.currentMode = MODE.SOUND;
   }
 
-  playSound(scoreboardNumber:string){
-    // speechSynthesis.speak(msg);
-
-    // var msg = new SpeechSynthesisUtterance();
-    // msg.text = 'Nummer ' + scoreboardNumber + " bitte";
-    // msg.lang = 'de-DE';
-    // msg.volume = 1; // 0 to 1
-    // msg.rate = 1; // 0.1 to 10
-    // msg.pitch = 2; //0 to 2
-    this.bellSound.muted = false;
-    this.bellSound.play();
+  playSound(scoreboardNumber: string) {
+    if (MODE.SOUND == this.currentMode) {
+      this.sound.muted = false;
+      this.sound.play();
+    } else if (MODE.SPEAK == this.currentMode) {
+      this.spechSynthesis.text = 'Nummer ' + scoreboardNumber + 'bitte';
+      speechSynthesis.speak(this.spechSynthesis);
+    }
   }
 }

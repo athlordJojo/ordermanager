@@ -906,10 +906,10 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
               return 0;
             }
 
-            _this5.inProgressOrders = data.filter(function (order) {
+            _this5.chunksOfInProgressOrders = data.filter(function (order) {
               return order.state == 'IN_PROGRESS';
             }).sort(sortOrderByModifiedDate);
-            _this5.readyOrders = data.filter(function (order) {
+            _this5.chunkOfReadyOrders = data.filter(function (order) {
               return order.state == 'READY';
             }).sort(sortOrderByModifiedDate);
             _this5.scoreBoardNumberOflastReadyOrder = _this5.readyOrders.length > 0 ? _this5.readyOrders[0].scoreBoardNumber.toString() : '-';

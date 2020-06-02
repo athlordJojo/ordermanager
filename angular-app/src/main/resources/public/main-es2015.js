@@ -452,9 +452,9 @@ class OrderListComponent {
                 // equal
                 return 0;
             }
-            this.inProgressOrders = data.filter(order => order.state == 'IN_PROGRESS').sort(sortOrderByModifiedDate);
-            this.readyOrders = data.filter(order => order.state == 'READY').sort(sortOrderByModifiedDate);
-            this.scoreBoardNumberOflastReadyOrder = this.readyOrders.length > 0 ? this.readyOrders[0].scoreBoardNumber.toString() : '-';
+            this.chunksOfInProgressOrders = data.filter(order => order.state == 'IN_PROGRESS').sort(sortOrderByModifiedDate);
+            this.chunkOfReadyOrders = data.filter(order => order.state == 'READY').sort(sortOrderByModifiedDate);
+            this.scoreBoardNumberOflastReadyOrder = this.chunkOfReadyOrders.length > 0 ? this.chunkOfReadyOrders[0].scoreBoardNumber.toString() : '-';
         });
     }
 }

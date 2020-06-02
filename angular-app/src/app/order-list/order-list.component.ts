@@ -13,6 +13,10 @@ import {Subscription} from "rxjs";
 export class OrderListComponent implements OnDestroy {
   private orderUpdateSubscription: Subscription;
 
+  scoreBoardNumberOflastReadyOrder: string;
+  chunkOfReadyOrders: Array<Array<OrderDto>>;
+  chunksOfInProgressOrders: Array<Array<OrderDto>>;
+
   ngOnDestroy(): void {
     console.debug("destroy")
     // TODO seems not to work. Multiple subscriber are alive after moving from one  path to another
@@ -35,17 +39,17 @@ export class OrderListComponent implements OnDestroy {
     this.loadData();
   }
 
-  scoreBoardNumberOflastReadyOrder: string;
-  readyOrders: OrderDto[];
-  inProgressOrders: OrderDto[];
 
   loadData() {
     this.orderApi.findAll().subscribe(data => {
-      this.inProgressOrders = this.orderService.filterAndSort(data, 'IN_PROGRESS');
-      this.readyOrders = this.orderService.filterAndSort(data, "READY");
-      let newScoreboardNumber = this.readyOrders.length > 0 ? this.readyOrders[0].scoreBoardNumber.toString() : '-';
-      console.log(this.inProgressOrders)
-      console.log(this.readyOrders)
+      let allInProgressOrders = this.orderService.filterAndSort(data, 'IN_PROGRESS');
+      let allReadyOrders = this.orderService.filterAndSort(data, "READY");
+      let newScoreboardNumber = allReadyOrders.length > 0 ? allReadyOrders[0].scoreBoardNumber.toString() : '-';
+
+      // create a subarray containing orderDto with a size of 5 elements
+      this.chunksOfInProgressOrders = this.orderService.sliceIntoSubArrays(allInProgressOrders);
+      this.chunkOfReadyOrders = this.orderService.sliceIntoSubArrays(allReadyOrders);
+
       let didScoreboardNumberChanged = this.scoreBoardNumberOflastReadyOrder !== newScoreboardNumber;
       if (this.scoreBoardNumberOflastReadyOrder && newScoreboardNumber !== '-' && didScoreboardNumberChanged) {
         this.audioService.playSound(newScoreboardNumber);
