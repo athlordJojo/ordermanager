@@ -4,17 +4,18 @@ import de.raychouni.ordernotifier.entities.Company;
 import de.raychouni.ordernotifier.entities.Order;
 import de.raychouni.ordernotifier.repos.CompanyRepository;
 import de.raychouni.ordernotifier.repos.OrderRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
+import javax.transaction.Transactional;
 import java.util.List;
 import java.util.UUID;
 
 import static de.raychouni.ordernotifier.services.OrderUpdate.CHANGE_TYPE.*;
 
 @Service
+@Transactional
 public class OrderService {
     private final OrderRepository orderRepository;
     private final CompanyRepository companyRepository;

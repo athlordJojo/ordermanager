@@ -10,6 +10,8 @@ import org.springframework.context.event.EventListener;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
+import org.springframework.transaction.event.TransactionPhase;
+import org.springframework.transaction.event.TransactionalEventListener;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -62,8 +64,9 @@ public class OrderController {
         return ResponseEntity.noContent().build();
     }
 
-    @EventListener
+    @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
     public void onEntityUpdate(OrderUpdate orderUpdate) {
+        log.debug("Sending order update");
         simpMessagingTemplate.convertAndSend("/topic/orders", orderUpdate);
     }
 
