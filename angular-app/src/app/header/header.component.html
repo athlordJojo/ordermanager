@@ -1,19 +1,30 @@
 <header>
-  <nav class="navbar navbar-expand navbar-dark bg-dark">
-    <a class="navbar-brand" href="#">Ordermanager</a>
-    <div class="collapse navbar" id="navbarSupportedContent">
+
+  <nav class="navbar navbar-expand-md navbar-dark bg-dark">
+    <div class="navbar-collapse collapse w-100 order-1 order-md-0 dual-collapse2">
       <ul class="navbar-nav mr-auto">
+
         <li class="nav-item">
           <a routerLink="/orders" class="nav-link">List Orders</a>
         </li>
         <li class="nav-item">
           <a routerLink="/manage" class="nav-link">Manage Orders</a>
         </li>
+
+      </ul>
+    </div>
+    <div class="mx-auto order-0">
+          <a class="navbar-brand mx-auto" href="#">
+            <img src="/assets/logo.png" width="260" height="90" class="d-inline-block align-top" alt="">
+          </a>
+    </div>
+    <div class="navbar-collapse collapse w-100 order-3 dual-collapse2">
+      <ul class="navbar-nav ml-auto">
+<!--        <li class="nav-item">-->
+<!--          <button type="button" class="btn btn-outline-secondary">Secondary</button>-->
+<!--        </li>-->
       </ul>
     </div>
   </nav>
-  <div class="text-center">
-    <img src="/assets/logo.png" class="img-fluid bg-dark rounded" alt="Responsive image">
-  </div>
-</header>
 
+</header>
