@@ -29,7 +29,7 @@ export class OrderService {
     return orders.filter(order => order.state == state).sort(sortOrderByModifiedDate);
   }
 
-  sliceIntoSubArrays(orders: OrderDto[], chunk = 3): Array<Array<OrderDto>> {
+  sliceIntoSubArrays(orders: OrderDto[], chunk = 4): Array<Array<OrderDto>> {
     let i, j, temparray;
     let ordersOfOrders = Array<Array<OrderDto>>();
     for (i = 0, j = orders.length; i < j; i += chunk) {
