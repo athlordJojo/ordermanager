@@ -9,7 +9,35 @@
 3. Insert sd card and flash it by using image and balena-etcher
 4. Put sd card in pi
 
-### Prepare Raspberry
+### Use image
+
+#### Create image of existing sd card
+    
+First find name of device with:
+
+        diskutil list
+For example: /dev/disk2
+
+Then unmount the card:
+    
+        diskutil unmountDisk /dev/disk2
+
+Now use this for creating the image:
+
+        sudo dd if=/dev/rdisk2 bs=1m | gzip > /Users/joan/pi.gz
+        
+#### Write image to sdcard:
+
+First find name of device with:
+
+        diskutil list
+For example: /dev/disk2
+
+Now use this for writing the image:
+
+        gzip -dc /Users/joan/pi.gz | sudo dd of=/dev/rdisk2 bs=1m
+
+### Prepare Raspberry: Server
 1. Enable ssh directly at raspberry with typing 
     
         sudo raspi-config
@@ -21,13 +49,13 @@
         sudo apt upgrade
         sudo apt install default-jdk
 
-### Copy jar file from mac to raspberry
+#### Copy jar file from mac to raspberry
 
 1. Copy file to home dir of pi user via:
 
         scp ./target/order-manager-1.0.0.jar pi@<IP>:
     
-### Create systemd service
+#### Create systemd service
 
 1. Copy service file
 
@@ -49,3 +77,14 @@
 
         sudo systemctl enable ordermanager.service
   
+  
+### Prepare Raspberry: UI
+Um Chromium fullscreen zu starten: 
+
+folgendes in /etc/xdg/lxsession/LXDE-pi/autostart eintragen
+
+        @unclutter
+        @xset s off
+        @xset -dpms
+        @xset s noblank
+        @chromium-browser --incognito --kiosk http://192.168.178.47:8080
