@@ -35,3 +35,4 @@ src/main/resources/public
 /angular-app/src/assets/logo.png
 ordermanager-db.mv.db
 /ordermanager-db.trace.db
+/ordermanager*.log

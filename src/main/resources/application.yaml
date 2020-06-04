@@ -11,5 +11,7 @@ spring:
   jpa:
     hibernate:
       ddl-auto: none
-server:
-#    show-sql: true
+logging:
+  file:
+    path: ./
+    name: ordermanager.log
