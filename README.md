@@ -79,12 +79,31 @@ Now use this for writing the image:
   
   
 ### Prepare Raspberry: UI
-Um Chromium fullscreen zu starten: 
+Um Chromium fullscreen zu starten ohne mauszeiger: 
 
-folgendes in /etc/xdg/lxsession/LXDE-pi/autostart eintragen
+#### Damit die Maus verschwindet
+    
+    apt-get install unclutter
+installieren
 
-        @unclutter
+#### Chrome im Vollbild ohne Maus bei Start öffnen
+
+Folgendes in /etc/xdg/lxsession/LXDE-pi/autostart eintragen
+
+        @unclutter -idle 0.1
         @xset s off
         @xset -dpms
         @xset s noblank
-        @chromium-browser --incognito --kiosk http://192.168.178.47:8080
+        @/home/pi/Desktop/ordermanager.sh
+        
+Auf dem Desktop Datei ordermanager.sh anlegen und mit:
+        
+        chmod +x /home/pi/Desktop/ordermanager.sh
+        
+ausführbar machen
+
+Und folgendes einfügen
+
+        #!/bin/bash
+        sleep 10
+        chromium-browser --incognito --kiosk http://192.168.178.47:8080/orders --autoplay-policy=no-user-gesture-required

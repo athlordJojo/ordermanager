@@ -3,7 +3,7 @@ import {HttpClient, HttpHeaders} from '@angular/common/http';
 import {OrderDto} from '../model/order-dto';
 import {Observable} from 'rxjs';
 import * as SockJS from "sockjs-client";
-import {CompatClient, Stomp} from "@stomp/stompjs";
+import {CompatClient, Stomp, StompSubscription} from "@stomp/stompjs";
 
 @Injectable()
 export class OrderApi implements OnDestroy {
@@ -37,8 +37,9 @@ export class OrderApi implements OnDestroy {
       let updateBody = JSON.parse(message.body);
       observer.next(updateBody)
     };
+    let stompSubscription: StompSubscription;
     if (this.client.connected) {
-      this.client.subscribe("/topic/orders", callback)
+      stompSubscription = this.client.subscribe("/topic/orders", callback)
     } else {
       this.client.connect({}, () => {
         // We are connected
@@ -48,6 +49,9 @@ export class OrderApi implements OnDestroy {
     }
     return {
       unsubscribe() {
+        if (stompSubscription) {
+          stompSubscription.unsubscribe();
+        }
         observer.unsubscribe();
       }
     };

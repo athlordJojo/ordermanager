@@ -7,7 +7,7 @@ const routes: Routes = [
   {path: 'orders', component: OrderListComponent},
   {path: 'manage', component: OrderFormComponent},
   {path: '', redirectTo: '/orders', pathMatch: 'full'},
-  {path: '**', component: OrderListComponent}
+  {path: '**', redirectTo: '/orders'}
 ];
 
 @NgModule({

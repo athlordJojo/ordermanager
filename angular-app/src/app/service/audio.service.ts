@@ -19,7 +19,7 @@ export class AudioService {
     this.sound = new Audio("../assets/doorbell.mp3");
     this.sound.load();
     this.sound.autoplay = false;
-    this.sound.muted = true
+    this.sound.muted = true;
 
     this.spechSynthesis = new SpeechSynthesisUtterance();
     this.spechSynthesis.lang = 'de-DE';
@@ -31,6 +31,7 @@ export class AudioService {
   }
 
   playSound(scoreboardNumber: string) {
+    console.log("playing sound")
     if (MODE.SOUND == this.currentMode) {
       this.sound.muted = false;
       this.sound.play();

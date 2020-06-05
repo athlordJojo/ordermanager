@@ -19,7 +19,7 @@ export class OrderListComponent implements OnDestroy {
 
   ngOnDestroy(): void {
     console.debug("destroy")
-    // TODO seems not to work. Multiple subscriber are alive after moving from one  path to another
+    // TODO seems not to work. Multiple subscriber are alive after moving from one path to another
     this.orderUpdateSubscription.unsubscribe();
   }
 
@@ -38,7 +38,6 @@ export class OrderListComponent implements OnDestroy {
     })
     this.loadData();
   }
-
 
   loadData() {
     this.orderApi.findAll().subscribe(data => {
