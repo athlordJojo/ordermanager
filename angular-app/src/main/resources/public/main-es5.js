@@ -518,7 +518,9 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
       _createClass(OrderFormComponent, [{
         key: "ngOnInit",
         value: function ngOnInit() {
-          this.loadData();
+          this.loadData(function () {
+
+          });
         }
       }, {
         key: "onSubmit",
@@ -529,7 +531,9 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
             return _this.gotoUserList();
           });
           this.newOrder.scoreBoardNumber = null;
-          this.loadData();
+          this.loadData(function () {
+
+          });
         }
       }, {
         key: "gotoUserList",
@@ -561,7 +565,9 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
           this.selectedOrder.state = state;
           this.orderService.update(this.selectedOrder).subscribe(function (data) {
-            return _this3.loadData();
+            return _this3.loadData(function () {
+
+            });
           });
         }
       }]);
@@ -872,7 +878,9 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
         this.orderService = orderService;
         var t = Object(rxjs__WEBPACK_IMPORTED_MODULE_1__["timer"])(2000, 4000);
         this.subscription = t.subscribe(function (v) {
-          _this4.loadData();
+          _this4.loadData(function () {
+
+          });
         });
       }
 
@@ -885,7 +893,9 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
       }, {
         key: "ngOnInit",
         value: function ngOnInit() {
-          this.loadData();
+          this.loadData(function () {
+
+          });
         }
       }, {
         key: "loadData",

@@ -1,5 +1,3 @@
-
-
 cd ./angular-app
 ng build --configuration="production"
 cd ../

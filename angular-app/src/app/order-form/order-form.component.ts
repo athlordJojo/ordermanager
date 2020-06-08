@@ -57,6 +57,9 @@ export class OrderFormComponent implements OnInit {
       this.orders.sort((o1, o2) => {
         return o1.state.localeCompare(o2.state.toString())
       });
+      if (this.orders.length > 0) {
+        this.selectedOrder = this.orders[0];
+      }
     })
   }
 
@@ -86,7 +89,7 @@ export class OrderFormComponent implements OnInit {
     let classForRow: string
 
     if (order === this.selectedOrder) {
-      classForRow = "list-group-item-primary";
+      classForRow = "list-group-item-primary active";
     } else {
       switch (order.state) {
         case "IN_PROGRESS": {

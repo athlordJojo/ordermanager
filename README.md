@@ -11,7 +11,7 @@
 
 ### Use image
 
-#### Create image of existing sd card
+#### Read image of existing sd card
     
 First find name of device with:
 
@@ -37,18 +37,38 @@ Now use this for writing the image:
 
         gzip -dc /Users/joan/pi.gz | sudo dd of=/dev/rdisk2 bs=1m
 
+#### Add ssh key of machine on raspberry pi:
+        
+        ssh-copy-id pi@192.168.178.51
+This will add the ssh keys of the mac to the raspberry.
+See: https://www.raspberrypi.org/documentation/remote-access/ssh/passwordless.md
+
 ### Prepare Raspberry: Server
 1. Enable ssh directly at raspberry with typing 
     
         sudo raspi-config
    
-   Interfaxce Options -> ssh-> yes
+   Interface Options -> ssh-> yes
 2. install java
        
         sudo apt update
         sudo apt upgrade
         sudo apt install default-jdk
 
+#### Assign static ip address for wifi. 
+Open file:
+
+        sudo nano /etc/dhcpcd.conf
+
+Insert the following block in case ip's start with 192.168.178.XXX otherwise adjust the ip:
+
+        interface wlan0
+        static ip_address=192.168.178.99/24
+        static ip6_address=fd51:42f8:caae:d92e::ff/64
+        static routers=192.168.178.1
+        static domain_name_servers=192.168.178.1 8.8.8.8 fd51:42f8:caae:d92e::1
+        
+See: https://www.elektronik-kompendium.de/sites/raspberry-pi/1912151.htm
 #### Copy jar file from mac to raspberry
 
 1. Copy file to home dir of pi user via:
