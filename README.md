@@ -2,40 +2,18 @@
 
 ## Installation on raspberry3
 
-### Install Raspberry
+### Read/Write images
+To create images from an sd card or writing an image to an sd card use applePi-Baker
+
+<b>Important</b>: remember to set the expand flag, otherwise the images are not working on other sdcards.
+![](documentation/images/applepibaker_resize.png)
+
+### Install Fresh Raspberry
 
 1. Download the [Raspberry pios lite](https://downloads.raspberrypi.org/raspios_lite_armhf_latest) from [here](https://www.raspberrypi.org/downloads/raspbian/)
-2. Download and install https://www.balena.io/etcher/
-3. Insert sd card and flash it by using image and balena-etcher
-4. Put sd card in pi
+2. Use ApplePi-Baker (see hardware_setup/images-Folder) to copy to sd card.
 
-### Use image
 
-#### Read image of existing sd card
-    
-First find name of device with:
-
-        diskutil list
-For example: /dev/disk2
-
-Then unmount the card:
-    
-        diskutil unmountDisk /dev/disk2
-
-Now use this for creating the image:
-
-        sudo dd if=/dev/rdisk2 bs=1m | gzip > /Users/joan/pi.gz
-        
-#### Write image to sdcard:
-
-First find name of device with:
-
-        diskutil list
-For example: /dev/disk2
-
-Now use this for writing the image:
-
-        gzip -dc /Users/joan/pi.gz | sudo dd of=/dev/rdisk2 bs=1m
 
 #### Add ssh key of machine on raspberry pi:
         
@@ -67,8 +45,8 @@ Insert the following block in case ip's start with 192.168.178.XXX otherwise adj
         static ip6_address=fd51:42f8:caae:d92e::ff/64
         static routers=192.168.178.1
         static domain_name_servers=192.168.178.1 8.8.8.8 fd51:42f8:caae:d92e::1
-        
 See: https://www.elektronik-kompendium.de/sites/raspberry-pi/1912151.htm
+
 #### Copy jar file from mac to raspberry
 
 1. Copy file to home dir of pi user via:
@@ -99,16 +77,14 @@ See: https://www.elektronik-kompendium.de/sites/raspberry-pi/1912151.htm
   
   
 ### Prepare Raspberry: UI
-Um Chromium fullscreen zu starten ohne mauszeiger: 
 
-#### Damit die Maus verschwindet
+
+#### To start chrome in fullscreen without mouse pointer 
     
-    apt-get install unclutter
-installieren
+    	sudo apt-get install unclutter
 
-#### Chrome im Vollbild ohne Maus bei Start öffnen
-
-Folgendes in /etc/xdg/lxsession/LXDE-pi/autostart eintragen
+		
+Now add to /etc/xdg/lxsession/LXDE-pi/autostart :
 
         @unclutter -idle 0.1
         @xset s off
@@ -116,7 +92,12 @@ Folgendes in /etc/xdg/lxsession/LXDE-pi/autostart eintragen
         @xset s noblank
         @/home/pi/Desktop/ordermanager.sh
         
-Auf dem Desktop Datei ordermanager.sh anlegen und mit:
+
+Create file:
+
+		touch /home/pi/Desktop/ordermanager.sh
+		
+and make it executable
         
         chmod +x /home/pi/Desktop/ordermanager.sh
         
@@ -126,4 +107,18 @@ Und folgendes einfügen
 
         #!/bin/bash
         sleep 10
-        chromium-browser --incognito --kiosk http://192.168.178.47:8080/orders --autoplay-policy=no-user-gesture-required
+        chromium-browser --incognito --autoplay-policy=no-user-gesture-required --disable-infobars --incognito --noerrdialogs --disable-translate --kiosk http://192.168.178.99:8080/orders
+        
+        
+# Troubleshooting
+
+## Rapsi does not connect to wifi raspi-config or desktop
+In case raspi does not connect even when password is correct, check:
+
+    sudo nano /etc/wpa_supplicant/wpa_supplicant.conf
+
+And make sure the desired network is in first place.
+
+See: https://www.raspberrypi.org/documentation/configuration/wireless/wireless-cli.md
+
+    

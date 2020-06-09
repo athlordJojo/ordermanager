@@ -10,7 +10,7 @@
   <div class="col">
     <ul class="list-group text-center">
       <li class="list-group-item list-group-item-dark"><h3>In Bearbeitung</h3></li>
-      <div class="display-4">
+      <div class="display-3">
         <li *ngFor="let inProgressOrders of chunksOfInProgressOrders" class="list-group-item list-group-item-secondary">
         <span *ngFor="let inProgressOrder of inProgressOrders"
               class="badge badge-secondary ml-3 mr-3">{{inProgressOrder.scoreBoardNumber }}</span>
@@ -21,7 +21,7 @@
   <div class="col">
     <ul class="list-group text-center">
       <li class="list-group-item list-group-item-dark"><h3>Bereit</h3></li>
-      <div class="display-4">
+      <div class="display-3">
         <li *ngFor="let readyOrders of chunkOfReadyOrders" class="list-group-item list-group-item-success">
           <span *ngFor="let readyOrder of readyOrders"
                 class="badge badge-success ml-3 mr-3">{{readyOrder.scoreBoardNumber }}</span>
