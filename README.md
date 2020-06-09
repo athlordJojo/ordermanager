@@ -110,6 +110,15 @@ Und folgendes einfügen
         chromium-browser --incognito --autoplay-policy=no-user-gesture-required --disable-infobars --incognito --noerrdialogs --disable-translate --kiosk http://192.168.178.99:8080/orders
         
         
+# Router
+In order to use the same static ip in private wifi and customer wifi, we need to use ips like: 192.168.178.X. This will help when switching the networks.
+Therefore we need change the dhcp setting. To do this set the following in the router-ui:
+
+1. Set ip of router to 192.168.178.1
+![](documentation/images/router/1.png)
+2. Set dhcp range
+![](documentation/images/router/2.png)
+
 # Troubleshooting
 
 ## Rapsi does not connect to wifi raspi-config or desktop
