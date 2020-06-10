@@ -27,8 +27,8 @@ public class OrderService {
         this.eventPublisher = eventPublisher;
     }
 
-    public List<Order> getAllOrdersByCompanyId(UUID customerId) {
-        return orderRepository.findAllByCompany_Uuid(customerId);
+    public List<Order> getAllOrdersByCompanyId(UUID companyId) {
+        return orderRepository.findAllByCompany_Uuid(companyId);
     }
 
     public Order createOrder(UUID companyId, Order order) {
@@ -40,15 +40,14 @@ public class OrderService {
         return order;
     }
 
-    public Order updateOrder(Order order, UUID companyId, UUID orderId) {
-        return orderRepository.findFirstByUuidAndCompany_Uuid(orderId, companyId).map(savedOrder -> {
-            savedOrder.setState(order.getState());
-            savedOrder.setScoreBoardNumber(order.getScoreBoardNumber());
-            savedOrder.setTitle(order.getTitle());
+    public Order updateOrder(Order updateOrder, UUID companyId, UUID orderToUpdate) {
+        return orderRepository.findFirstByUuidAndCompany_Uuid(orderToUpdate, companyId).map(existingOrder -> {
+            existingOrder.setState(updateOrder.getState());
+            existingOrder.setScoreBoardNumber(updateOrder.getScoreBoardNumber());
+            existingOrder.setTitle(updateOrder.getTitle());
             publishChange(UPDATED);
-            return orderRepository.save(savedOrder);
-        }).orElseThrow(() -> new EntityNotFoundException("Could not find Order with id" + orderId + " for companyId: " + companyId));
-
+            return orderRepository.save(existingOrder);
+        }).orElseThrow(() -> new EntityNotFoundException("Could not find Order with id" + orderToUpdate + " for companyId: " + companyId));
     }
 
     public void deleteOrder(UUID companyId, UUID orderId) {
@@ -58,7 +57,7 @@ public class OrderService {
         publishChange(DELETED);
     }
 
-    private void publishChange(OrderUpdate.CHANGE_TYPE deleted2) {
-        eventPublisher.publishEvent(new OrderUpdate(deleted2));
+    private void publishChange(OrderUpdate.CHANGE_TYPE changeType) {
+        eventPublisher.publishEvent(new OrderUpdate(changeType));
     }
 }

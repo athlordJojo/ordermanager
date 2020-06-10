@@ -6,6 +6,7 @@ import lombok.Setter;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -31,7 +32,7 @@ public class Company {
             cascade = CascadeType.ALL,
             orphanRemoval = true
     )
-    private List<Order> orders;
+    private List<Order> orders = new ArrayList<>();
 
 
     public void addOrder(Order order){

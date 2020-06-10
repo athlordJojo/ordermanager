@@ -1,8 +1,10 @@
 package de.raychouni.ordernotifier.services;
 
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 
 @Getter
+@EqualsAndHashCode
 public class OrderUpdate{
     CHANGE_TYPE change;
 
