@@ -14,7 +14,6 @@ To create images from an sd card or writing an image to an sd card use applePi-B
 2. Use ApplePi-Baker (see hardware_setup/images-Folder) to copy to sd card.
 
 
-
 #### Add ssh key of machine on raspberry pi:
         
         ssh-copy-id pi@192.168.178.51
@@ -53,6 +52,14 @@ See: https://www.elektronik-kompendium.de/sites/raspberry-pi/1912151.htm
 
         scp ./target/order-manager-1.0.0.jar pi@<IP>:
     
+#### Adjust /etc/hosts 
+<b>Important</b> add this line to /etc/hosts
+
+		192.168.178.99  appsrv
+		
+Otherwise websocket connections wont work without internet!
+See: https://stackoverflow.com/questions/40280923/no-websocket-connection-without-internet-access-ubuntu		
+
 #### Create systemd service
 
 1. Copy service file
