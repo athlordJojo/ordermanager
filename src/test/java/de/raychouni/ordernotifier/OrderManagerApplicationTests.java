@@ -1,13 +1,13 @@
 package de.raychouni.ordernotifier;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import de.raychouni.ordernotifier.dtos.CompanyDto;
 import de.raychouni.ordernotifier.dtos.OrderDto;
 import de.raychouni.ordernotifier.repos.CompanyRepository;
 import de.raychouni.ordernotifier.repos.OrderRepository;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import de.raychouni.ordernotifier.services.OrderUpdate;
+import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -15,14 +15,29 @@ import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.http.*;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
+import org.springframework.messaging.converter.MappingJackson2MessageConverter;
+import org.springframework.messaging.simp.stomp.StompFrameHandler;
+import org.springframework.messaging.simp.stomp.StompHeaders;
+import org.springframework.messaging.simp.stomp.StompSession;
+import org.springframework.messaging.simp.stomp.StompSessionHandlerAdapter;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.springframework.web.socket.client.standard.StandardWebSocketClient;
+import org.springframework.web.socket.messaging.WebSocketStompClient;
+import org.springframework.web.socket.sockjs.client.SockJsClient;
+import org.springframework.web.socket.sockjs.client.Transport;
+import org.springframework.web.socket.sockjs.client.WebSocketTransport;
 
 import java.io.IOException;
-import java.util.Collections;
-import java.util.Objects;
-import java.util.UUID;
+import java.lang.reflect.Type;
+import java.util.*;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
+import static de.raychouni.ordernotifier.services.OrderUpdate.CHANGE_TYPE.*;
+import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.http.HttpMethod.*;
 
@@ -37,20 +52,36 @@ class OrderManagerApplicationTests {
     @LocalServerPort
     private int port;
 
-    private String url;
+
+    @Autowired
+    private ObjectMapper objectMapper;
 
     @Autowired
     private TestRestTemplate restTemplate;
 
     @Autowired
-    OrderRepository orderRepository;
+    private OrderRepository orderRepository;
 
     @Autowired
-    CompanyRepository companyRepository;
+    private CompanyRepository companyRepository;
+
+    private CompletableFuture<OrderUpdate> completableFuture;
+    private StompSession stompSession;
+
+    private String url;
 
     @BeforeEach
-    void setUp() {
+    void setUp() throws InterruptedException, ExecutionException, TimeoutException {
         url = "http://localhost:" + port;
+
+        // prepeare for receiving incoming websocket messages
+        List<Transport> transports = List.of(new WebSocketTransport(new StandardWebSocketClient()));
+        WebSocketStompClient stompClient = new WebSocketStompClient(new SockJsClient(transports));
+        stompClient.setMessageConverter(new MappingJackson2MessageConverter());
+        stompSession = stompClient.connect("ws://localhost:" + port + "/liveupdates", new StompSessionHandlerAdapter() {
+        }).get(1, SECONDS);
+        completableFuture = new CompletableFuture<>();
+
 //         for making patch requests: https://stackoverflow.com/questions/29447382/resttemplate-patch-request
 //        restTemplate.getRestTemplate().setRequestFactory(new HttpComponentsClientHttpRequestFactory());
     }
@@ -59,10 +90,8 @@ class OrderManagerApplicationTests {
     void tearDown() {
         orderRepository.deleteAll();
         companyRepository.deleteAll();
+        stompSession.disconnect();
     }
-
-    @Autowired
-    ObjectMapper objectMapper;
 
     @Test
     @Sql({"classpath:company_test.sql", "classpath:order_test.sql"})
@@ -82,24 +111,34 @@ class OrderManagerApplicationTests {
 
     @Test
     @Sql({"classpath:company_test.sql", "classpath:order_test.sql"})
-    void deleteOrderOfCompany() {
+    void deleteOrderOfCompany() throws InterruptedException, ExecutionException, TimeoutException {
         assertEquals(1, orderRepository.count());
+
+        // listen for websocket messages
+        stompSession.subscribe("/topic/orders", new CreateStompFrameHandler());
+
         restTemplate.delete(url + "/companies/" + companyId + "/orders/" + order1Id);
         // expect
         ResponseEntity<OrderDto[]> response = restTemplate.getForEntity(url + "/companies/" + companyId + "/orders", OrderDto[].class);
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(0, Objects.requireNonNull(response.getBody()).length);
         assertEquals(0, orderRepository.count());
+
+        waitAndCheckIncomingWebsocketMessage(DELETED);
     }
 
     @Test
     @Sql({"classpath:company_test.sql"})
-    void createOrdersForCompany() {
+    void createOrdersForCompany() throws InterruptedException, ExecutionException, TimeoutException {
         assertEquals(0, orderRepository.count());
         OrderDto newDto = new OrderDto();
         newDto.setState("IN_PROGRESS");
         newDto.setScoreBoardNumber(1);
         newDto.setTitle("Test title");
+
+        // listen for websocket messages
+        stompSession.subscribe("/topic/orders", new CreateStompFrameHandler());
+
         ResponseEntity<OrderDto> response = restTemplate.postForEntity(url + "/companies/" + companyId + "/orders", newDto, OrderDto.class);
         assertEquals(HttpStatus.CREATED, response.getStatusCode());
         OrderDto responseDto = response.getBody();
@@ -110,11 +149,13 @@ class OrderManagerApplicationTests {
         ResponseEntity<OrderDto[]> orderResponse = restTemplate.getForEntity(url + "/companies/" + companyId + "/orders", OrderDto[].class);
         assertEquals(HttpStatus.OK, orderResponse.getStatusCode());
         assertEquals(1, Objects.requireNonNull(orderResponse.getBody()).length);
+
+        waitAndCheckIncomingWebsocketMessage(INSERTED);
     }
 
     @Test
     @Sql({"classpath:company_test.sql", "classpath:order_test.sql"})
-    void updateOrderOfCompany() {
+    void updateOrderOfCompany() throws InterruptedException, ExecutionException, TimeoutException {
         OrderDto updateDto = new OrderDto();
         updateDto.setState("READY");
         updateDto.setScoreBoardNumber(2);
@@ -125,6 +166,9 @@ class OrderManagerApplicationTests {
         headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
         HttpEntity<OrderDto> request = new HttpEntity<>(updateDto, headers);
 
+        // listen for websocket messages
+        stompSession.subscribe("/topic/orders", new CreateStompFrameHandler());
+
         ResponseEntity<OrderDto> response = restTemplate.exchange(url + "/companies/" + companyId + "/orders/" + order1Id, PUT, request, OrderDto.class);
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertTrue(response.hasBody());
@@ -132,5 +176,31 @@ class OrderManagerApplicationTests {
         assertEquals("READY", body.getState());
         assertEquals("New title", body.getTitle());
         assertEquals(2, body.getScoreBoardNumber());
+        waitAndCheckIncomingWebsocketMessage(UPDATED);
+    }
+
+    private void waitAndCheckIncomingWebsocketMessage(OrderUpdate.CHANGE_TYPE changeType) throws InterruptedException, ExecutionException, TimeoutException {
+        OrderUpdate orderUpdate = completableFuture.get(5, SECONDS);
+        assertNotNull(orderUpdate);
+        assertEquals(changeType, orderUpdate.getChange());
+    }
+
+    private class CreateStompFrameHandler implements StompFrameHandler {
+        @Override
+        public Type getPayloadType(StompHeaders stompHeaders) {
+            return Object.class;
+        }
+
+        @Override
+        public void handleFrame(StompHeaders stompHeaders, Object o) {
+            try {
+                // until now coulnt find a way send messages preserving the type, therefore to string and then to required type
+                String s = objectMapper.writeValueAsString(o);
+                OrderUpdate orderUpdate = objectMapper.readValue(s, OrderUpdate.class);
+                completableFuture.complete(orderUpdate);
+            } catch (JsonProcessingException e) {
+                e.printStackTrace();
+            }
+        }
     }
 }

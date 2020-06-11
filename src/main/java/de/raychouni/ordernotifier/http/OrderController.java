@@ -6,7 +6,6 @@ import de.raychouni.ordernotifier.services.OrderService;
 import de.raychouni.ordernotifier.services.OrderUpdate;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
-import org.springframework.context.event.EventListener;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.simp.SimpMessagingTemplate;

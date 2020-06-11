@@ -1,10 +1,10 @@
 package de.raychouni.ordernotifier.services;
 
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
-@Getter
-@EqualsAndHashCode
+@Data
+@NoArgsConstructor
 public class OrderUpdate{
     CHANGE_TYPE change;
 
