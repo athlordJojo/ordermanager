@@ -41,8 +41,8 @@ export class OrderListComponent implements OnDestroy {
 
   loadData() {
     this.orderApi.findAll().subscribe(data => {
-      let allInProgressOrders = this.orderService.filterAndSort(data, 'IN_PROGRESS');
-      let allReadyOrders = this.orderService.filterAndSort(data, "READY");
+      let allInProgressOrders = this.orderService.filterAndSortByModifiedDate(data, 'IN_PROGRESS');
+      let allReadyOrders = this.orderService.filterAndSortByModifiedDate(data, "READY");
       let newScoreboardNumber = allReadyOrders.length > 0 ? allReadyOrders[0].scoreBoardNumber.toString() : '-';
 
       // create a subarray containing orderDto with a size of 5 elements

@@ -13,7 +13,19 @@ export class OrderService {
     return orders.find(order => order.scoreBoardNumber == scoredboardNumber) != null;
   }
 
-  filterAndSort(orders: OrderDto[], state: string) {
+  sortByScoreBoardNumber(orders: OrderDto[]) {
+    return orders.sort((a, b) => {
+      if (a.scoreBoardNumber > b.scoreBoardNumber) {
+        return -1;
+      } else if (a.scoreBoardNumber > b.scoreBoardNumber) {
+        return 1;
+      } else {
+        return 0;
+      }
+    }).reverse();
+  }
+
+  filterAndSortByModifiedDate(orders: OrderDto[], state: string) {
     function sortOrderByModifiedDate(order1: OrderDto, order2: OrderDto): number {
       if (order1.lastModifiedDate < order2.lastModifiedDate) {
         // order1 is older

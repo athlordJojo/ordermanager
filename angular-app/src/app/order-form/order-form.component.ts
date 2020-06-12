@@ -108,4 +108,46 @@ export class OrderFormComponent implements OnInit {
   resetForm() {
     this.newScoreBoardNumberForm.reset();
   }
+
+  addDigitToScoreBoardNumber(number: number) {
+    let asString: String = this.newScoreBoardNumberForm.value !== null ? this.newScoreBoardNumberForm.value.toString() : "";
+    this.newScoreBoardNumberForm.setValue(asString.concat(number.toString()));
+  }
+
+  deleteLastChar() {
+    let length = this.newScoreBoardNumberForm.value.length;
+    if (this.newScoreBoardNumberForm.value && length > 0) {
+      let oneLess: String = this.newScoreBoardNumberForm.value.substring(0, length - 1);
+      this.newScoreBoardNumberForm.setValue(oneLess);
+    }
+  }
+
+  selectNextFreeNumber() {
+    let nextScoreBoardNumber: String;
+
+    if (this.orders.length > 0) {
+      let sorted: OrderDto[] = this.orderService.sortByScoreBoardNumber(this.orders);
+
+      let all: number[] = [];// a set containing all numbers from 0 to the biggest scoreboardnumber.
+
+      // create set containing all numbers from 0 to the biggest available scoreboardnumber + 1.
+      // the +1 is necessary because we want to make sure that we even get a difference when all numbers are there
+      // from 0 to the biggest scoreboardnumber are assigned
+      for (let i = 0; i <= sorted[sorted.length - 1].scoreBoardNumber + 1; i++) {
+        all.push(i);
+      }
+
+      let allScoreBoardNumbers = sorted.map(value => value.scoreBoardNumber);
+      // create a difference between all numbers and the already used numbers (set theory).
+      // Now the 'difference'-array contains all numbers which are not yet assigned.
+      let difference:number[] = all.filter(x => !allScoreBoardNumbers.includes(x));
+
+      nextScoreBoardNumber = difference[0].toString();
+    } else {
+      // in case we dont have any scoreboardnumber yet
+      nextScoreBoardNumber = "0";
+    }
+
+    this.newScoreBoardNumberForm.setValue(nextScoreBoardNumber);
+  }
 }
