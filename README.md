@@ -64,7 +64,7 @@ See: https://stackoverflow.com/questions/40280923/no-websocket-connection-withou
 
 1. Copy service file
 
-        scp ./raspberry/ordermanager.service pi@<IP>:ordermanager.service
+        scp ./hardware_setup/server/ordermanager.service pi@<IP>:ordermanager.service
 1. ssh to pi.
 1. make jar executable:
             

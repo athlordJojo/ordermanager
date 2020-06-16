@@ -59,7 +59,7 @@
     <div class="text-center">
       <div class="btn-group btn-group-lg" role="group">
         <button [disabled]="!selectedOrder" type="button" class="btn btn-success"
-                (click)="changeStateOfSelectedOrder('READY')">Fertig gestellt
+                (click)="changeStateOfSelectedOrder('READY')">Abholbereit
         </button>
         <button [disabled]="!selectedOrder" type="button" class="btn btn-secondary"
                 (click)="changeStateOfSelectedOrder('IN_PROGRESS')">In Bearbeitung
@@ -92,5 +92,18 @@
 
       </li>
     </ul>
+    <div class="text-center">
+      <div class="btn-group btn-group-lg" role="group">
+        <button [disabled]="!selectedOrder" type="button" class="btn btn-success"
+                (click)="changeStateOfSelectedOrder('READY')">Abholbereit
+        </button>
+        <button [disabled]="!selectedOrder" type="button" class="btn btn-secondary"
+                (click)="changeStateOfSelectedOrder('IN_PROGRESS')">In Bearbeitung
+        </button>
+        <button [disabled]="!selectedOrder" type="button" class="btn btn-danger"
+                (click)="deleteSelectedOrder(selectedOrder)">Abgeschlossen
+        </button>
+      </div>
+    </div>
   </div>
 </div>
