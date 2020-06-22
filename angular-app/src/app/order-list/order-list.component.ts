@@ -1,6 +1,6 @@
-import {ApplicationRef, ChangeDetectorRef, Component, NgZone, OnDestroy, OnInit} from '@angular/core';
+import {Component, OnDestroy} from '@angular/core';
 import {OrderApi} from "../api/order-api.service";
-import {OrderDto} from "../model/order-dto";
+import {OrderDto, OrderState} from "../model/order-dto";
 import {OrderService} from "../service/order.service";
 import {AudioService} from "../service/audio.service";
 import {Subscription} from "rxjs";
@@ -41,8 +41,8 @@ export class OrderListComponent implements OnDestroy {
 
   loadData() {
     this.orderApi.findAll().subscribe(data => {
-      let allInProgressOrders = this.orderService.filterAndSortByModifiedDate(data, 'IN_PROGRESS').reverse();
-      let allReadyOrders = this.orderService.filterAndSortByModifiedDate(data, "READY").reverse();
+      let allInProgressOrders = this.orderService.filterAndSortByModifiedDate(data, OrderState.IN_PROGRESS)
+      let allReadyOrders = this.orderService.filterAndSortByModifiedDate(data, OrderState.READY)
       let newScoreboardNumber = allReadyOrders.length > 0 ? allReadyOrders[allReadyOrders.length - 1].scoreBoardNumber.toString() : '-';
 
       // create a subarray containing orderDto with a size of 5 elements

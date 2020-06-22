@@ -1,7 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {OrderApi} from '../api/order-api.service';
-import {OrderDto} from "../model/order-dto";
-import {FormGroup, FormControl, Validators, ValidatorFn, ValidationErrors} from '@angular/forms';
+import {OrderDto, OrderState} from "../model/order-dto";
+import {FormControl, FormGroup, ValidationErrors, ValidatorFn, Validators} from '@angular/forms';
 import {OrderService} from "../service/order.service";
 
 @Component({
@@ -12,6 +12,7 @@ import {OrderService} from "../service/order.service";
 export class OrderFormComponent implements OnInit {
   newScoreBoardNumberForm: FormControl;
 
+  orderState = OrderState
   ngOnInit(): void {
     this.loadData();
   }
@@ -19,6 +20,8 @@ export class OrderFormComponent implements OnInit {
   newOrderForm: FormGroup;
   selectedOrder: OrderDto;
   orders: OrderDto[] = [];
+  allInProgressOrders: OrderDto[] = [];
+  allReadyOrders: OrderDto[] = [];
 
   constructor(
     private orderApi: OrderApi,
@@ -54,13 +57,18 @@ export class OrderFormComponent implements OnInit {
   loadData() {
     this.orderApi.findAll().subscribe(data => {
       this.orders = data;
-      this.orders.sort((o1, o2) => {
-        return o1.state.localeCompare(o2.state.toString())
-      });
-      if (this.orders.length > 0) {
-        this.selectedOrder = this.orders[0];
-      }
+      this.allInProgressOrders = this.orderService.filterAndSortByModifiedDate(data, OrderState.IN_PROGRESS)
+      this.allReadyOrders = this.orderService.filterAndSortByModifiedDate(data, OrderState.READY)
+      this.preselectOrder();
     })
+  }
+
+  private preselectOrder() {
+    if (this.allInProgressOrders.length > 0) {
+      this.selectedOrder = this.allInProgressOrders[0];
+    } else if (this.allReadyOrders.length > 0) {
+      this.selectedOrder = this.allReadyOrders[0];
+    }
   }
 
   toggleOrder(selectedOrder: OrderDto) {
@@ -72,7 +80,7 @@ export class OrderFormComponent implements OnInit {
     }
   }
 
-  changeStateOfSelectedOrder(state: string) {
+  changeStateOfSelectedOrder(state: OrderState) {
     this.selectedOrder.state = state;
     this.orderApi.update(this.selectedOrder).subscribe(data => this.loadData());
     this.toggleOrder(this.selectedOrder);
@@ -92,11 +100,11 @@ export class OrderFormComponent implements OnInit {
       classForRow = "list-group-item-primary active";
     } else {
       switch (order.state) {
-        case "IN_PROGRESS": {
+        case OrderState.IN_PROGRESS: {
           classForRow = "list-group-item-secondary"
           break;
         }
-        case "READY": {
+        case OrderState.READY: {
           classForRow = "list-group-item-success"
           break;
         }
