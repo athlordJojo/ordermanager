@@ -1,6 +1,6 @@
 import {Injectable, OnDestroy} from '@angular/core';
-import {HttpClient, HttpHeaders} from '@angular/common/http';
-import {OrderDto} from '../model/order-dto';
+import {HttpClient} from '@angular/common/http';
+import {OrderDto, OrderState} from '../model/order-dto';
 import {Observable} from 'rxjs';
 import * as SockJS from "sockjs-client";
 import {CompatClient, Stomp, StompSubscription} from "@stomp/stompjs";
@@ -12,13 +12,13 @@ export class OrderApi implements OnDestroy {
   private readonly client: CompatClient;
 
   constructor(private http: HttpClient) {
-    this.url = '/companies/B28C343D-03C1-4FF1-90B9-5DDA8AFD3BFE';
-    // this.url = 'http://localhost:8080/companies/B28C343D-03C1-4FF1-90B9-5DDA8AFD3BFE';
+    // this.url = '/companies/B28C343D-03C1-4FF1-90B9-5DDA8AFD3BFE';
+    this.url = 'http://localhost:8080/companies/B28C343D-03C1-4FF1-90B9-5DDA8AFD3BFE';
 
 
     this.client = Stomp.over(function () {
-      return new SockJS('/liveupdates')
-      // return new SockJS('http://localhost:8080/liveupdates')
+      // return new SockJS('/liveupdates')
+      return new SockJS('http://localhost:8080/liveupdates')
     });
 
     this.client.reconnect_delay = 5000;
@@ -61,7 +61,7 @@ export class OrderApi implements OnDestroy {
     return this.http.get<OrderDto[]>(this.url + "/orders");
   }
 
-  public save(scoreBoardNumber: number, state = "IN_PROGRESS"): Observable<OrderDto> {
+  public save(scoreBoardNumber: number, state:OrderState = OrderState.IN_PROGRESS): Observable<OrderDto> {
     let newOrder: OrderDto = new OrderDto();
     newOrder.state = state;
     newOrder.scoreBoardNumber = scoreBoardNumber;
