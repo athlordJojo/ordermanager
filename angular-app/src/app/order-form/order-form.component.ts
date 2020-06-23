@@ -37,7 +37,10 @@ export class OrderFormComponent implements OnInit {
   }
 
   createNewOrder() {
-    this.orderApi.save(this.newScoreBoardNumberForm.value).subscribe(result => {
+    let newOrder: OrderDto = new OrderDto();
+    newOrder.state = OrderState.IN_PROGRESS;
+    newOrder.scoreBoardNumber = this.newScoreBoardNumberForm.value;
+    this.orderApi.save(newOrder).subscribe(result => {
       this.newScoreBoardNumberForm.reset()
       this.loadData();
     });

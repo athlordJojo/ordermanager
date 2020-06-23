@@ -14,7 +14,7 @@ describe('Order-api', () => {
   const dummyResponse: OrderDto[] = [orderDto]
 
   beforeEach(() => {
-    const httpSpy = jasmine.createSpyObj('HttpClient', ['get', 'delete', 'put']);
+    const httpSpy = jasmine.createSpyObj('HttpClient', ['get', 'delete', 'put', 'post']);
 
     TestBed.configureTestingModule({
       // Provide both the service-to-test and its (spy) dependency
@@ -40,6 +40,14 @@ describe('Order-api', () => {
       expect(orders).toEqual(dummyResponse)
     }, fail)
     expect(httpClientSpy.get).toHaveBeenCalledWith("/companies/B28C343D-03C1-4FF1-90B9-5DDA8AFD3BFE/orders")
+  });
+
+  it('creates a new order expect success', () => {
+    httpClientSpy.post.and.returnValue(of("needs a parameter, otherwise oberserveable is not executed"));
+    service.save(orderDto).subscribe(orders => {
+      // nothing to check here
+    }, fail)
+    expect(httpClientSpy.post).toHaveBeenCalledWith("/companies/B28C343D-03C1-4FF1-90B9-5DDA8AFD3BFE/orders", orderDto)
   });
 
   it('updates the given order expect success', () => {

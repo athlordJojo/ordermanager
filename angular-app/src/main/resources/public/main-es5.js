@@ -922,7 +922,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
             _this5.chunkOfReadyOrders = data.filter(function (order) {
               return order.state == 'READY';
             }).sort(sortOrderByModifiedDate);
-            _this5.scoreBoardNumberOflastReadyOrder = _this5.readyOrders.length > 0 ? _this5.readyOrders[0].scoreBoardNumber.toString() : '-';
+            _this5.mainScoreBoardNumber = _this5.readyOrders.length > 0 ? _this5.readyOrders[0].scoreBoardNumber.toString() : '-';
           });
         }
       }]);

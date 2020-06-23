@@ -11,8 +11,8 @@ enum MODE {
 })
 export class AudioService {
 
-  private sound;
-  private readonly spechSynthesis;
+  private readonly sound:HTMLAudioElement;
+  private readonly spechSynthesis:SpeechSynthesisUtterance;
   private readonly currentMode: MODE;
 
   constructor() {
@@ -31,7 +31,7 @@ export class AudioService {
   }
 
   playSound(scoreboardNumber: string) {
-    console.log("playing sound")
+    console.debug("playing sound")
     if (MODE.SOUND == this.currentMode) {
       this.sound.muted = false;
       this.sound.play();

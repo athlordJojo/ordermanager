@@ -454,7 +454,7 @@ class OrderListComponent {
             }
             this.chunksOfInProgressOrders = data.filter(order => order.state == 'IN_PROGRESS').sort(sortOrderByModifiedDate);
             this.chunkOfReadyOrders = data.filter(order => order.state == 'READY').sort(sortOrderByModifiedDate);
-            this.scoreBoardNumberOflastReadyOrder = this.chunkOfReadyOrders.length > 0 ? this.chunkOfReadyOrders[0].scoreBoardNumber.toString() : '-';
+            this.mainScoreBoardNumber = this.chunkOfReadyOrders.length > 0 ? this.chunkOfReadyOrders[0].scoreBoardNumber.toString() : '-';
         });
     }
 }

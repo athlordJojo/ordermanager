@@ -13,7 +13,8 @@ import {Subscription} from "rxjs";
 export class OrderListComponent implements OnDestroy {
   private orderUpdateSubscription: Subscription;
 
-  scoreBoardNumberOflastReadyOrder: string;
+  private readonly initMainScoreBoardNumber: string = "_"
+  mainScoreBoardNumber: string;
   chunkOfReadyOrders: Array<Array<OrderDto>>;
   chunksOfInProgressOrders: Array<Array<OrderDto>>;
 
@@ -27,13 +28,16 @@ export class OrderListComponent implements OnDestroy {
               private orderService: OrderService,
               private audioService: AudioService) {
     var that = this;
+    this.mainScoreBoardNumber = this.initMainScoreBoardNumber
+    this.chunkOfReadyOrders = [];
+    this.chunksOfInProgressOrders = [];
     this.orderUpdateSubscription = this.orderApi.updates.subscribe({
       next(update) {
         console.log('Received order update in component: ', update);
         that.loadData();
       },
       error(msg) {
-        console.error('order update in component: ', msg);
+        console.error('error order update in component: ', msg);
       }
     })
     this.loadData();
@@ -45,15 +49,16 @@ export class OrderListComponent implements OnDestroy {
       let allReadyOrders = this.orderService.filterAndSortByModifiedDate(data, OrderState.READY)
       let newScoreboardNumber = allReadyOrders.length > 0 ? allReadyOrders[allReadyOrders.length - 1].scoreBoardNumber.toString() : '-';
 
-      // create a subarray containing orderDto with a size of 5 elements
+      // create a subarray containing orderDto with a size of 4 elements
       this.chunksOfInProgressOrders = this.orderService.sliceIntoSubArrays(allInProgressOrders);
       this.chunkOfReadyOrders = this.orderService.sliceIntoSubArrays(allReadyOrders);
 
-      let didScoreboardNumberChanged = this.scoreBoardNumberOflastReadyOrder !== newScoreboardNumber;
-      if (this.scoreBoardNumberOflastReadyOrder && newScoreboardNumber !== '-' && didScoreboardNumberChanged) {
+      let didScoreboardNumberChanged = this.mainScoreBoardNumber !== newScoreboardNumber;
+      let isFirstRun = this.mainScoreBoardNumber === this.initMainScoreBoardNumber
+      if (!isFirstRun && newScoreboardNumber !== '-' && didScoreboardNumberChanged) {
         this.audioService.playSound(newScoreboardNumber);
       }
-      this.scoreBoardNumberOflastReadyOrder = newScoreboardNumber;
+      this.mainScoreBoardNumber = newScoreboardNumber;
     });
   }
 }
