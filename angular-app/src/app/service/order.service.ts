@@ -15,14 +15,14 @@ export class OrderService {
 
   sortByScoreBoardNumber(orders: OrderDto[]) {
     return orders.sort((a, b) => {
-      if (a.scoreBoardNumber > b.scoreBoardNumber) {
+      if (a.scoreBoardNumber < b.scoreBoardNumber) {
         return -1;
       } else if (a.scoreBoardNumber > b.scoreBoardNumber) {
         return 1;
       } else {
         return 0;
       }
-    }).reverse();
+    });
   }
 
   filterAndSortByModifiedDate(orders: OrderDto[], state: OrderState) {
