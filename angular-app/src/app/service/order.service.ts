@@ -9,7 +9,7 @@ export class OrderService {
   constructor() {
   }
 
-  existOrderWithScoreboardNumber(orders: OrderDto[], scoredboardNumber: number) {
+  existOrderWithScoreboardNumber(orders: OrderDto[], scoredboardNumber: number): boolean {
     return orders.find(order => order.scoreBoardNumber == scoredboardNumber) != null;
   }
 

@@ -15,13 +15,13 @@ export class OrderApi implements OnDestroy {
   private readonly companyId: string = 'B28C343D-03C1-4FF1-90B9-5DDA8AFD3BFE';
 
   constructor(private http: HttpClient) {
-    // this.url = `/companies/${this.companyId}/orders`
-    this.url = 'http://localhost:8080/companies/B28C343D-03C1-4FF1-90B9-5DDA8AFD3BFE/orders';
+    this.url = `/companies/${this.companyId}/orders`
+    // this.url = 'http://localhost:8080/companies/B28C343D-03C1-4FF1-90B9-5DDA8AFD3BFE/orders';
 
 
     this.client = Stomp.over(function () {
-      // return new SockJS('/liveupdates')
-      return new SockJS('http://localhost:8080/liveupdates')
+      return new SockJS('/liveupdates')
+      // return new SockJS('http://localhost:8080/liveupdates')
     });
 
     this.client.reconnect_delay = 5000;
