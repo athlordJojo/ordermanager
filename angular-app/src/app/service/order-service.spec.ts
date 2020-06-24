@@ -39,12 +39,12 @@ describe('OrderServiceService', () => {
 
     readyOrder2 = new OrderDto();
     readyOrder2.state = OrderState.READY
-    readyOrder1.scoreBoardNumber = 5
+    readyOrder2.scoreBoardNumber = 5
     readyOrder2.lastModifiedDate = new Date(2017, 0O5, 0O5, 16, 24, 42, 11);
 
     readyOrder3 = new OrderDto();
     readyOrder3.state = OrderState.READY
-    readyOrder1.scoreBoardNumber = 5
+    readyOrder3.scoreBoardNumber = 6
     readyOrder3.lastModifiedDate = new Date(2015, 0O5, 0O5, 16, 24, 42, 11);
   });
 
