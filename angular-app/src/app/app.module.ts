@@ -9,13 +9,17 @@ import {OrderApi} from "./api/order-api.service";
 import {HttpClientModule} from "@angular/common/http";
 import {AppRoutingModule} from "./app-routing.module";
 import { HeaderComponent } from './header/header.component';
+import { ManageListComponent } from './manage-list/manage-list.component';
+import { MainListComponent } from './main-list/main-list.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     OrderListComponent,
     OrderFormComponent,
-    HeaderComponent
+    HeaderComponent,
+    ManageListComponent,
+    MainListComponent
   ],
   imports: [
     BrowserModule,

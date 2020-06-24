@@ -72,21 +72,10 @@
 
     <div class="row bg-dark mt-4">
       <div class="col">
-        <ul class="list-group text-center">
-          <li class="list-group-item list-group-item-dark">{{allInProgressOrders.length}} Bestellungen in Bearbeitung
-          </li>
-          <li (click)="toggleOrder(order)" [ngClass]="getClassForListItem(order)"
-              *ngFor="let order of allInProgressOrders"
-              class="list-group-item">{{order.scoreBoardNumber}}
-        </ul>
+        <app-manage-list [orders]="allInProgressOrders" [selectedOrder]="selectedOrder" (clickedItem)="toggleOrder($event)" [description]="'Bestellungen in Bearbeitung'"></app-manage-list>
       </div>
-
       <div class="col">
-        <ul class="list-group text-center">
-          <li class="list-group-item list-group-item-dark">{{allReadyOrders.length}} Bestellungen abholbereit</li>
-          <li (click)="toggleOrder(order)" [ngClass]="getClassForListItem(order)" *ngFor="let order of allReadyOrders"
-              class="list-group-item">{{order.scoreBoardNumber}}
-        </ul>
+        <app-manage-list [orders]="allReadyOrders" [selectedOrder]="selectedOrder" (clickedItem)="toggleOrder($event)" [description]="'Bestellungen abholbereit'"></app-manage-list>
       </div>
     </div>
   </div>
