@@ -1,5 +1,6 @@
 import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {OrderDto, OrderState} from "../model/order-dto";
+import {CssHelperService} from "../service/css-helper.service";
 
 @Component({
   selector: 'app-manage-list',
@@ -11,29 +12,13 @@ export class ManageListComponent implements OnInit {
   @Input() selectedOrder: OrderDto
   @Input() description: string
   @Output() clickedItem = new EventEmitter<OrderDto>();
-  constructor() { }
+  cssHelperService: CssHelperService;
 
-  ngOnInit(): void {
+  constructor(cssHelperService: CssHelperService) {
+    this.cssHelperService = cssHelperService;
   }
 
-  getClassForListItem(order: OrderDto) {
-    let classForRow: string
-
-    if (order === this.selectedOrder) {
-      classForRow = "list-group-item-primary active";
-    } else {
-      switch (order.state) {
-        case OrderState.IN_PROGRESS: {
-          classForRow = "list-group-item-secondary"
-          break;
-        }
-        case OrderState.READY: {
-          classForRow = "list-group-item-success"
-          break;
-        }
-      }
-    }
-    return classForRow;
+  ngOnInit(): void {
   }
 
   handleClick(order: OrderDto) {

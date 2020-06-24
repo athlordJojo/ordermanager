@@ -1,12 +1,12 @@
-<ul class="list-group text-center">
-  <li class="list-group-item list-group-item-dark"><h3>{{description}}</h3></li>
-  <div class="display-3">
-    <li *ngFor="let orders of ordersOfOrders"
-        [ngClass]="{'list-group-item-secondary':visualizedState === 'OrderState.IN_PROGRESS', 'list-group-item-success':visualizedState === 'READY'}"
-        class="list-group-item list-group-item-secondary">
+  <ul class="list-group text-center">
+    <li class="list-group-item list-group-item-dark"><h3>{{description}}</h3></li>
+    <div class="display-3">
+      <li *ngFor="let orders of ordersOfOrders"
+          [ngClass]="{'list-group-item-secondary':visualizedState === 'IN_PROGRESS', 'list-group-item-success':visualizedState === 'READY'}"
+          class="list-group-item list-group-item-secondary">
         <span *ngFor="let order of orders"
               [ngClass]="{'badge-secondary':visualizedState === 'IN_PROGRESS', 'badge-success':visualizedState === 'READY'}"
               class="badge ml-3 mr-3">{{order.scoreBoardNumber}}</span>
-    </li>
-  </div>
-</ul>
+      </li>
+    </div>
+  </ul>

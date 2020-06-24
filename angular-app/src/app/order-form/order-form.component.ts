@@ -96,26 +96,6 @@ export class OrderFormComponent implements OnInit {
       });
   }
 
-  getClassForListItem(order: OrderDto) {
-    let classForRow: string
-
-    if (order === this.selectedOrder) {
-      classForRow = "list-group-item-primary active";
-    } else {
-      switch (order.state) {
-        case OrderState.IN_PROGRESS: {
-          classForRow = "list-group-item-secondary"
-          break;
-        }
-        case OrderState.READY: {
-          classForRow = "list-group-item-success"
-          break;
-        }
-      }
-    }
-    return classForRow;
-  }
-
   resetForm() {
     this.newScoreBoardNumberForm.reset();
   }

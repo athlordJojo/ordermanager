@@ -1,6 +1,6 @@
 <ul class="list-group text-center">
   <li class="list-group-item list-group-item-dark">{{orders.length}} {{description}}
   </li>
-  <li (click)="handleClick(order)" [ngClass]="getClassForListItem(order)"
+  <li (click)="handleClick(order)" [ngClass]="cssHelperService.getClassForListItem(order, selectedOrder)"
       *ngFor="let order of orders" class="list-group-item">{{order.scoreBoardNumber}}
 </ul>
