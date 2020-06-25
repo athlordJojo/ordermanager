@@ -19,7 +19,7 @@ import { MainListComponent } from './main-list/main-list.component';
     OrderFormComponent,
     HeaderComponent,
     ManageListComponent,
-    MainListComponent
+    MainListComponent,
   ],
   imports: [
     BrowserModule,

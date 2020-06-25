@@ -23,14 +23,17 @@
         </div>
       </div>
       <div class="text-center">
-        <div class="btn-group btn-group-lg mb-4" role="group2">
-          <button type="button" class="btn btn-secondary" *ngFor="let i of [1,2,3,4,5,6,7,8,9,0]"
+        <div class="btn-toolbar" role="toolbar" aria-label="Toolbar with button groups">
+
+        </div>
+        <div class="btn-group d-flex mb-4 mt-2" role="group2">
+          <button type="button" class="btn btn-secondary w-75 pt-2 pb-2" *ngFor="let i of [1,2,3,4,5,6,7,8,9,0]"
                   (click)="addDigitToScoreBoardNumber(i)">{{i}}
           </button>
-          <button [disabled]="!newScoreBoardNumberForm.value" type="button" class="btn btn-warning"
+          <button [disabled]="!newScoreBoardNumberForm.value" type="button" class="btn btn-warning w-75 pt-2 pb-2"
                   (click)="deleteLastChar()"><
           </button>
-          <button type="button" class="btn btn"
+          <button type="button" class="btn btn-light w-75 pt-2 pb-2"
                   (click)="selectNextFreeNumber()">Auto
           </button>
         </div>
