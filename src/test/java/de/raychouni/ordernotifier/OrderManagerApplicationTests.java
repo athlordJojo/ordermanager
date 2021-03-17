@@ -15,7 +15,9 @@ import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.http.*;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
+import org.springframework.messaging.converter.ByteArrayMessageConverter;
 import org.springframework.messaging.converter.MappingJackson2MessageConverter;
+import org.springframework.messaging.converter.StringMessageConverter;
 import org.springframework.messaging.simp.stomp.StompFrameHandler;
 import org.springframework.messaging.simp.stomp.StompHeaders;
 import org.springframework.messaging.simp.stomp.StompSession;
@@ -194,9 +196,10 @@ class OrderManagerApplicationTests {
         @Override
         public void handleFrame(StompHeaders stompHeaders, Object o) {
             try {
-                // until now coulnt find a way send messages preserving the type, therefore to string and then to required type
-                String s = objectMapper.writeValueAsString(o);
-                OrderUpdate orderUpdate = objectMapper.readValue(s, OrderUpdate.class);
+                // until now couldnt find a way send messages preserving the type, therefore to string and then to required type
+                byte[] contentAsByteArray = (byte[]) o;
+                String h= new String(contentAsByteArray);
+                OrderUpdate orderUpdate = objectMapper.readValue(h, OrderUpdate.class);
                 completableFuture.complete(orderUpdate);
             } catch (JsonProcessingException e) {
                 e.printStackTrace();
