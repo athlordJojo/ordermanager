@@ -21,6 +21,7 @@
         <sonar.projectKey>athlordJojo_ordermanager</sonar.projectKey>
         <sonar.organization>athlordjojo</sonar.organization>
         <sonar.host.url>https://sonarcloud.io</sonar.host.url>
+        <sonar.exclusions>angular-app/src/main/resources/public/*.js</sonar.exclusions>
     </properties>
 
     <dependencies>
@@ -104,25 +105,58 @@
                     <target>11</target>
                 </configuration>
             </plugin>
+
             <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>exec-maven-plugin</artifactId>
-                <version>1.6.0</version>
+                <groupId>org.jacoco</groupId>
+                <artifactId>jacoco-maven-plugin</artifactId>
+                <version>0.8.6</version>
                 <executions>
                     <execution>
-                        <phase>validate</phase>
                         <goals>
-                            <goal>exec</goal>
+                            <goal>prepare-agent</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>report</id>
+                        <phase>prepare-package</phase>
+                        <goals>
+                            <goal>report</goal>
                         </goals>
                     </execution>
                 </executions>
-                <configuration>
-                    <executable>ng</executable>
-                    <workingDirectory>angular-app</workingDirectory>
-                    <arguments>build</arguments>
-                </configuration>
             </plugin>
         </plugins>
     </build>
+
+<profiles>
+    <profile>
+        <id>build-angular-app</id>
+        <activation>
+            <activeByDefault>true</activeByDefault>
+        </activation>
+        <build>
+            <plugins>
+                <plugin>
+                    <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>exec-maven-plugin</artifactId>
+                    <version>1.6.0</version>
+                    <executions>
+                        <execution>
+                            <phase>validate</phase>
+                            <goals>
+                                <goal>exec</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                    <configuration>
+                        <executable>ng</executable>
+                        <workingDirectory>angular-app</workingDirectory>
+                        <arguments>build</arguments>
+                    </configuration>
+                </plugin>
+            </plugins>
+        </build>
+    </profile>
+</profiles>
 
 </project>
