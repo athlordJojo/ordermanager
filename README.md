@@ -107,15 +107,20 @@ Create file:
 and make it executable
         
         chmod +x /home/pi/Desktop/ordermanager.sh
-        
-ausführbar machen
 
-Und folgendes einfügen
+
+And add the following:
 
         #!/bin/bash
         sleep 10
         chromium-browser --incognito --autoplay-policy=no-user-gesture-required --disable-infobars --incognito --noerrdialogs --disable-translate --kiosk http://192.168.178.99:8080/orders
         
+This will start chromium with some flags:
+* -autoplay-policy=no-user-gesture-required: normally the user needs to click in order to play audio files. This disables this check
+* --kiosk: will go into full screen without address bar.
+* --disable-infobars: no info about available chrome updates
+* --noerrdialogs: do not show error dialogs
+
         
 # Router
 In order to use the same static ip in private wifi and customer wifi, we need to use ips like: 192.168.178.X. This will help when switching the networks.
