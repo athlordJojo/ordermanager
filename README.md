@@ -142,4 +142,8 @@ And make sure the desired network is in first place.
 
 See: https://www.raspberrypi.org/documentation/configuration/wireless/wireless-cli.md
 
-    
+# Sonarcloud
+
+## Analysis
+The java code is analysed via [sonarcloud](https://sonarcloud.io/dashboard?id=athlordJojo_ordermanager)
+It is executed/updated on every merge into develop and triggered by github worflow (see: .github/workflows/build.yaml) 

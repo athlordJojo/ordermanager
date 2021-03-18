@@ -1,8 +1,6 @@
 package de.raychouni.ordernotifier.entities;
 
 import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;

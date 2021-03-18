@@ -5,7 +5,6 @@ import de.raychouni.ordernotifier.entities.Company;
 import de.raychouni.ordernotifier.services.CompanyService;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -29,10 +28,9 @@ public class CompanyController {
     @ResponseStatus(HttpStatus.OK)
     public List<CompanyDto> getCustomers() {
         List<Company> all = companyService.getAll();
-        List<CompanyDto> dtos = all.stream()
+        return all.stream()
                 .map(company -> modelMapper.map(company, CompanyDto.class))
                 .collect(Collectors.toList());
-        return dtos;
     }
 
 }
