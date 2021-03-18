@@ -21,7 +21,7 @@
         <sonar.projectKey>athlordJojo_ordermanager</sonar.projectKey>
         <sonar.organization>athlordjojo</sonar.organization>
         <sonar.host.url>https://sonarcloud.io</sonar.host.url>
-        <sonar.exclusions>angular-app/src/main/resources/public/*.js</sonar.exclusions>
+<!--        <sonar.exclusions>angular-app/src/main/resources/public/*.js</sonar.exclusions>-->
     </properties>
 
     <dependencies>
