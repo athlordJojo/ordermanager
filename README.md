@@ -15,24 +15,24 @@ To create images from an sd card or writing an image to an sd card use applePi-B
 
 
 #### Add ssh key of machine on raspberry pi:
-        
+
         ssh-copy-id pi@192.168.178.51
 This will add the ssh keys of the mac to the raspberry.
 See: https://www.raspberrypi.org/documentation/remote-access/ssh/passwordless.md
 
 ### Prepare Raspberry: Server
-1. Enable ssh directly at raspberry with typing 
-    
+1. Enable ssh directly at raspberry with typing
+
         sudo raspi-config
-   
+
    Interface Options -> ssh-> yes
 2. install java
-       
+
         sudo apt update
         sudo apt upgrade
         sudo apt install default-jdk
 
-#### Assign static ip address for wifi. 
+#### Assign static ip address for wifi.
 Open file:
 
         sudo nano /etc/dhcpcd.conf
@@ -51,14 +51,14 @@ See: https://www.elektronik-kompendium.de/sites/raspberry-pi/1912151.htm
 1. Copy file to home dir of pi user via:
 
         scp ./target/order-manager-1.0.0.jar pi@<IP>:
-    
-#### Adjust /etc/hosts 
+
+#### Adjust /etc/hosts
 <b>Important</b> add this line to /etc/hosts
 
 		192.168.178.99  appsrv
-		
+
 Otherwise websocket connections wont work without internet!
-See: https://stackoverflow.com/questions/40280923/no-websocket-connection-without-internet-access-ubuntu		
+See: https://stackoverflow.com/questions/40280923/no-websocket-connection-without-internet-access-ubuntu
 
 #### Create systemd service
 
@@ -67,30 +67,30 @@ See: https://stackoverflow.com/questions/40280923/no-websocket-connection-withou
         scp ./hardware_setup/server/ordermanager.service pi@<IP>:ordermanager.service
 1. ssh to pi.
 1. make jar executable:
-            
+
         chmod +x order-manager-1.0.0.jar
 1. copy service file:
-   
+
         sudo cp ordermanager.service /etc/systemd/system/ordermanager.service
 1. start service:
 
         sudo systemctl start ordermanager.service
 1. check state
-    
+
         sudo systemctl status ordermanager.service
 1. enable service so it gets started on boot
 
         sudo systemctl enable ordermanager.service
-  
-  
+
+
 ### Prepare Raspberry: UI
 
 
-#### To start chrome in fullscreen without mouse pointer 
-    
+#### To start chrome in fullscreen without mouse pointer
+
     	sudo apt-get install unclutter
 
-		
+
 Now add to /etc/xdg/lxsession/LXDE-pi/autostart :
 
         @unclutter -idle 0.1
@@ -98,14 +98,14 @@ Now add to /etc/xdg/lxsession/LXDE-pi/autostart :
         @xset -dpms
         @xset s noblank
         @/home/pi/Desktop/ordermanager.sh
-        
+
 
 Create file:
 
 		touch /home/pi/Desktop/ordermanager.sh
-		
+
 and make it executable
-        
+
         chmod +x /home/pi/Desktop/ordermanager.sh
 
 
@@ -114,14 +114,14 @@ And add the following:
         #!/bin/bash
         sleep 10
         chromium-browser --incognito --autoplay-policy=no-user-gesture-required --disable-infobars --incognito --noerrdialogs --disable-translate --kiosk http://192.168.178.99:8080/orders
-        
+
 This will start chromium with some flags:
 * -autoplay-policy=no-user-gesture-required: normally the user needs to click in order to play audio files. This disables this check
 * --kiosk: will go into full screen without address bar.
 * --disable-infobars: no info about available chrome updates
 * --noerrdialogs: do not show error dialogs
 
-        
+
 # Router
 In order to use the same static ip in private wifi and customer wifi, we need to use ips like: 192.168.178.X. This will help when switching the networks.
 Therefore we need change the dhcp setting. To do this set the following in the router-ui:
@@ -146,4 +146,15 @@ See: https://www.raspberrypi.org/documentation/configuration/wireless/wireless-c
 
 ## Analysis
 The java code is analysed via [sonarcloud](https://sonarcloud.io/dashboard?id=athlordJojo_ordermanager)
-It is executed/updated on every merge into develop and triggered by github worflow (see: .github/workflows/build.yaml) 
+It is executed/updated on every merge into develop and triggered by github worflow (see: .github/workflows/build.yaml)
+
+# Precommit
+Please install [pre-commit](https://pre-commit.com/#install) by:
+
+      brew install pre-commit
+
+And then activate the pre commits by:
+
+      pre-commit install
+
+This will always run some basic checks before committing
