@@ -4,6 +4,8 @@ import de.raychouni.order.adapter.out.persistence.entities.Company;
 import de.raychouni.order.adapter.out.persistence.entities.Order;
 import de.raychouni.order.adapter.out.persistence.CompanyRepository;
 import de.raychouni.order.adapter.out.persistence.OrderRepository;
+import de.raychouni.order.application.OrderService;
+import de.raychouni.order.application.port.in.GetAllOrdersForCompanyCommand;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -52,7 +54,7 @@ class OrderServiceTest {
     @Test
     void getAllOrdersByCompanyId() {
         when(orderRepository.findAllByCompany_Uuid(company.getUuid())).thenReturn(List.of(order));
-        List<Order> ordersByCompanyId = orderService.getAllOrdersByCompanyId(company.getUuid());
+        List<Order> ordersByCompanyId = orderService.getAllOrdersByCompanyId(new GetAllOrdersForCompanyCommand(company.getUuid()));
         assertNotNull(ordersByCompanyId);
         assertEquals(1, ordersByCompanyId.size());
         assertEquals(order, ordersByCompanyId.get(0));

@@ -1,9 +1,12 @@
-package de.raychouni.ordernotifier.services;
+package de.raychouni.order.application;
 
 import de.raychouni.order.adapter.out.persistence.entities.Company;
 import de.raychouni.order.adapter.out.persistence.entities.Order;
 import de.raychouni.order.adapter.out.persistence.CompanyRepository;
 import de.raychouni.order.adapter.out.persistence.OrderRepository;
+import de.raychouni.order.application.port.in.GetAllOrdersForCompanyCommand;
+import de.raychouni.order.application.port.in.GetAllOrdersForCompanyUseCase;
+import de.raychouni.ordernotifier.services.OrderUpdate;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 
@@ -16,7 +19,7 @@ import static de.raychouni.ordernotifier.services.OrderUpdate.CHANGE_TYPE.*;
 
 @Service
 @Transactional
-public class OrderService {
+public class OrderService implements GetAllOrdersForCompanyUseCase {
     private final OrderRepository orderRepository;
     private final CompanyRepository companyRepository;
     private final ApplicationEventPublisher eventPublisher;
@@ -27,8 +30,9 @@ public class OrderService {
         this.eventPublisher = eventPublisher;
     }
 
-    public List<Order> getAllOrdersByCompanyId(UUID companyId) {
-        return orderRepository.findAllByCompany_Uuid(companyId);
+    @Override
+    public List<Order> getAllOrdersByCompanyId(GetAllOrdersForCompanyCommand getAllOrdersForCompanyCommand) {
+        return orderRepository.findAllByCompany_Uuid(getAllOrdersForCompanyCommand.getCompanyUuid());
     }
 
     public Order createOrder(UUID companyId, Order order) {

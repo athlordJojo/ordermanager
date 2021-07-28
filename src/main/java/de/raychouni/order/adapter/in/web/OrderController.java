@@ -1,8 +1,10 @@
 package de.raychouni.order.adapter.in.web;
 
+import de.raychouni.order.application.port.in.GetAllOrdersForCompanyCommand;
+import de.raychouni.order.application.port.in.GetAllOrdersForCompanyUseCase;
 import de.raychouni.ordernotifier.dtos.OrderDto;
 import de.raychouni.order.adapter.out.persistence.entities.Order;
-import de.raychouni.ordernotifier.services.OrderService;
+import de.raychouni.order.application.OrderService;
 import de.raychouni.ordernotifier.services.OrderUpdate;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
@@ -25,18 +27,20 @@ public class OrderController {
     private final OrderService orderService;
     private final ModelMapper modelMapper;
     private SimpMessagingTemplate simpMessagingTemplate;
+    private final GetAllOrdersForCompanyUseCase getAllOrdersForCompanyUseCase;
 
-    public OrderController(OrderService orderService, ModelMapper modelMapper, SimpMessagingTemplate simpMessagingTemplate) {
+    public OrderController(OrderService orderService, ModelMapper modelMapper, SimpMessagingTemplate simpMessagingTemplate, GetAllOrdersForCompanyUseCase getAllOrdersForCompanyUseCase) {
         this.orderService = orderService;
         this.modelMapper = modelMapper;
         this.simpMessagingTemplate = simpMessagingTemplate;
+        this.getAllOrdersForCompanyUseCase = getAllOrdersForCompanyUseCase;
     }
 
     @GetMapping("/companies/{companyId}/orders")
     @ResponseBody
     @ResponseStatus(HttpStatus.OK)
     public List<OrderDto> getAllOrders(@PathVariable("companyId") UUID companyId) {
-        List<Order> all = orderService.getAllOrdersByCompanyId(companyId);
+        List<Order> all = getAllOrdersForCompanyUseCase.getAllOrdersByCompanyId(new GetAllOrdersForCompanyCommand(companyId));
         return all.stream().map(order -> modelMapper.map(order, OrderDto.class)).collect(Collectors.toList());
     }
 
