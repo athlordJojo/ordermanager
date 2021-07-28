@@ -1,9 +1,7 @@
 package de.raychouni.order.adapter.out.persistence;
 
-import de.raychouni.order.adapter.out.persistence.CompanyRepository;
-import de.raychouni.order.adapter.out.persistence.OrderRepository;
-import de.raychouni.ordernotifier.entities.Company;
-import de.raychouni.ordernotifier.entities.Order;
+import de.raychouni.order.adapter.out.persistence.entities.Company;
+import de.raychouni.order.adapter.out.persistence.entities.Order;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
@@ -13,7 +11,7 @@ import org.springframework.test.context.jdbc.Sql;
 import java.util.Optional;
 import java.util.UUID;
 
-import static de.raychouni.ordernotifier.entities.Order.State.IN_PROGRESS;
+import static de.raychouni.order.adapter.out.persistence.entities.Order.State.IN_PROGRESS;
 import static org.junit.jupiter.api.Assertions.*;
 
 @DataJpaTest

@@ -1,4 +1,4 @@
-package de.raychouni.ordernotifier.entities;
+package de.raychouni.order.adapter.out.persistence.entities;
 
 import lombok.Data;
 import org.hibernate.annotations.GenericGenerator;

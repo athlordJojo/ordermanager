@@ -1,7 +1,7 @@
 package de.raychouni.ordernotifier.services;
 
-import de.raychouni.ordernotifier.entities.Company;
-import de.raychouni.ordernotifier.entities.Order;
+import de.raychouni.order.adapter.out.persistence.entities.Company;
+import de.raychouni.order.adapter.out.persistence.entities.Order;
 import de.raychouni.order.adapter.out.persistence.CompanyRepository;
 import de.raychouni.order.adapter.out.persistence.OrderRepository;
 import org.springframework.context.ApplicationEventPublisher;

@@ -49,7 +49,6 @@ class OrderManagerApplicationTests {
     @LocalServerPort
     private int port;
 
-
     @Autowired
     private ObjectMapper objectMapper;
 

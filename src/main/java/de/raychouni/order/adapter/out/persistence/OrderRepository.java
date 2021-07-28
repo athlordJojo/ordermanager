@@ -1,6 +1,6 @@
 package de.raychouni.order.adapter.out.persistence;
 
-import de.raychouni.ordernotifier.entities.Order;
+import de.raychouni.order.adapter.out.persistence.entities.Order;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

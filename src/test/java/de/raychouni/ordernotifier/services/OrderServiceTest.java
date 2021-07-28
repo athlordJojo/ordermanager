@@ -1,7 +1,7 @@
 package de.raychouni.ordernotifier.services;
 
-import de.raychouni.ordernotifier.entities.Company;
-import de.raychouni.ordernotifier.entities.Order;
+import de.raychouni.order.adapter.out.persistence.entities.Company;
+import de.raychouni.order.adapter.out.persistence.entities.Order;
 import de.raychouni.order.adapter.out.persistence.CompanyRepository;
 import de.raychouni.order.adapter.out.persistence.OrderRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -16,7 +16,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-import static de.raychouni.ordernotifier.entities.Order.State.READY;
+import static de.raychouni.order.adapter.out.persistence.entities.Order.State.READY;
 import static de.raychouni.ordernotifier.services.OrderUpdate.CHANGE_TYPE.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
