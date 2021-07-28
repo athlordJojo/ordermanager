@@ -1,6 +1,7 @@
 package de.raychouni.order.adapter.out.persistence;
 
-import de.raychouni.order.adapter.out.persistence.entities.CompanyJPA;
+import de.raychouni.company.adapter.out.persistence.CompanyRepository;
+import de.raychouni.company.adapter.out.persistence.entities.CompanyJPA;
 import de.raychouni.order.adapter.out.persistence.entities.OrderJPA;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

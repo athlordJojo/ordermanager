@@ -1,5 +1,6 @@
-package de.raychouni.order.adapter.out.persistence.entities;
+package de.raychouni.company.adapter.out.persistence.entities;
 
+import de.raychouni.order.adapter.out.persistence.entities.OrderJPA;
 import lombok.Data;
 import org.hibernate.annotations.GenericGenerator;
 

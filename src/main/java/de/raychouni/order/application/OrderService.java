@@ -1,8 +1,8 @@
 package de.raychouni.order.application;
 
-import de.raychouni.order.adapter.out.persistence.entities.CompanyJPA;
+import de.raychouni.company.adapter.out.persistence.entities.CompanyJPA;
 import de.raychouni.order.adapter.out.persistence.entities.OrderJPA;
-import de.raychouni.order.adapter.out.persistence.CompanyRepository;
+import de.raychouni.company.adapter.out.persistence.CompanyRepository;
 import de.raychouni.order.adapter.out.persistence.OrderRepository;
 import de.raychouni.order.application.port.in.GetAllOrdersForCompanyCommand;
 import de.raychouni.order.application.port.in.GetAllOrdersForCompanyUseCase;

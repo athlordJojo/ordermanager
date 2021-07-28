@@ -1,5 +1,6 @@
 package de.raychouni.order.adapter.out.persistence.entities;
 
+import de.raychouni.company.adapter.out.persistence.entities.CompanyJPA;
 import lombok.Data;
 import org.hibernate.annotations.GenericGenerator;
 import org.springframework.data.annotation.CreatedDate;

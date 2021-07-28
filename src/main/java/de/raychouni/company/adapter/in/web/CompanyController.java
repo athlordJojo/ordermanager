@@ -1,8 +1,10 @@
-package de.raychouni.order.adapter.in.web;
+package de.raychouni.company.adapter.in.web;
 
+import de.raychouni.company.application.port.in.GetAllCompaniesUseCase;
+import de.raychouni.company.domain.Company;
 import de.raychouni.ordernotifier.dtos.CompanyDto;
-import de.raychouni.order.adapter.out.persistence.entities.CompanyJPA;
-import de.raychouni.ordernotifier.services.CompanyService;
+import de.raychouni.company.adapter.out.persistence.entities.CompanyJPA;
+import de.raychouni.company.application.CompanyService;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -15,11 +17,11 @@ import java.util.stream.Collectors;
 @CrossOrigin(origins = "http://localhost:4200")
 public class CompanyController {
 
-    private final CompanyService companyService;
+    private final GetAllCompaniesUseCase getAllCompaniesUseCase;
     private final ModelMapper modelMapper;
 
-    public CompanyController(CompanyService companyService, ModelMapper modelMapper) {
-        this.companyService = companyService;
+    public CompanyController(GetAllCompaniesUseCase getAllCompaniesUseCase, ModelMapper modelMapper) {
+        this.getAllCompaniesUseCase = getAllCompaniesUseCase;
         this.modelMapper = modelMapper;
     }
 
@@ -27,7 +29,7 @@ public class CompanyController {
     @ResponseBody
     @ResponseStatus(HttpStatus.OK)
     public List<CompanyDto> getCustomers() {
-        List<CompanyJPA> all = companyService.getAll();
+        List<Company> all = getAllCompaniesUseCase.getAllCompanies();
         return all.stream()
                 .map(company -> modelMapper.map(company, CompanyDto.class))
                 .collect(Collectors.toList());

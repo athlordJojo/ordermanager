@@ -1,6 +1,6 @@
 package de.raychouni.order.domain;
 
-import de.raychouni.order.adapter.out.persistence.entities.CompanyJPA;
+import de.raychouni.company.adapter.out.persistence.entities.CompanyJPA;
 import lombok.Data;
 
 import java.util.Date;

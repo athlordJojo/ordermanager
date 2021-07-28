@@ -1,8 +1,7 @@
 package de.raychouni.ordernotifier.services;
 
-import de.raychouni.order.adapter.out.persistence.entities.CompanyJPA;
-import de.raychouni.order.adapter.out.persistence.entities.OrderJPA;
-import de.raychouni.order.adapter.out.persistence.CompanyRepository;
+import de.raychouni.company.adapter.out.persistence.entities.CompanyJPA;
+import de.raychouni.company.adapter.out.persistence.CompanyRepository;
 import de.raychouni.order.adapter.out.persistence.OrderRepository;
 import de.raychouni.order.application.OrderService;
 import de.raychouni.order.application.port.in.GetAllOrdersForCompanyCommand;
@@ -15,13 +14,9 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.context.ApplicationEventPublisher;
 
-import javax.persistence.EntityNotFoundException;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
-import static de.raychouni.order.adapter.out.persistence.entities.OrderJPA.State.READY;
-import static de.raychouni.ordernotifier.services.OrderUpdate.CHANGE_TYPE.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 

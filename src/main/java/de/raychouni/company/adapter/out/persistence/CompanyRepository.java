@@ -1,6 +1,6 @@
-package de.raychouni.order.adapter.out.persistence;
+package de.raychouni.company.adapter.out.persistence;
 
-import de.raychouni.order.adapter.out.persistence.entities.CompanyJPA;
+import de.raychouni.company.adapter.out.persistence.entities.CompanyJPA;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

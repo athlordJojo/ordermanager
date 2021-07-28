@@ -4,7 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import de.raychouni.ordernotifier.dtos.CompanyDto;
 import de.raychouni.ordernotifier.dtos.OrderDto;
-import de.raychouni.order.adapter.out.persistence.CompanyRepository;
+import de.raychouni.company.adapter.out.persistence.CompanyRepository;
 import de.raychouni.order.adapter.out.persistence.OrderRepository;
 import de.raychouni.ordernotifier.services.OrderUpdate;
 import org.junit.jupiter.api.*;
