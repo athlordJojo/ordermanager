@@ -1,7 +1,7 @@
 package de.raychouni.order.adapter.out.persistence;
 
-import de.raychouni.order.adapter.out.persistence.entities.Company;
-import de.raychouni.order.adapter.out.persistence.entities.Order;
+import de.raychouni.order.adapter.out.persistence.entities.CompanyJPA;
+import de.raychouni.order.adapter.out.persistence.entities.OrderJPA;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
@@ -11,11 +11,11 @@ import org.springframework.test.context.jdbc.Sql;
 import java.util.Optional;
 import java.util.UUID;
 
-import static de.raychouni.order.adapter.out.persistence.entities.Order.State.IN_PROGRESS;
+import static de.raychouni.order.adapter.out.persistence.entities.OrderJPA.State.IN_PROGRESS;
 import static org.junit.jupiter.api.Assertions.*;
 
 @DataJpaTest
-class OrderRepositoryTest {
+class OrderJPARepositoryTest {
 
     @Autowired
     OrderRepository orderRepository;
@@ -48,27 +48,27 @@ class OrderRepositoryTest {
     @Test
     @Sql({"classpath:company_test.sql", "classpath:additional_company_test.sql", "classpath:order_test.sql"})
     void findFirstByUuidAndCompanyUuid_withValidMapping_expectResult() {
-        Optional<Order> result = orderRepository.findFirstByUuidAndCompany_Uuid(order1Id, companyId);
+        Optional<OrderJPA> result = orderRepository.findFirstByUuidAndCompany_Uuid(order1Id, companyId);
         assertTrue(result.isPresent());
-        Order order = result.get();
+        OrderJPA order = result.get();
         assertEquals(order1Id, order.getUuid());
     }
 
     @Test
     @Sql({"classpath:company_test.sql", "classpath:additional_company_test.sql", "classpath:order_test.sql"})
     void findFirstByUuidAndCompanyUuid_withNonExistingMapping_expectEmptyResult() {
-        Optional<Order> result = orderRepository.findFirstByUuidAndCompany_Uuid(order1Id, companyWithoutOrderId);
+        Optional<OrderJPA> result = orderRepository.findFirstByUuidAndCompany_Uuid(order1Id, companyWithoutOrderId);
         assertTrue(result.isEmpty());
     }
 
     @Test
     @Sql({"classpath:company_test.sql", "classpath:order_test.sql"})
     void checkConstraintCompanyUUid_ScoreBoardnumber() {
-        Optional<Order> result = orderRepository.findFirstByUuidAndCompany_Uuid(order1Id, companyId);
+        Optional<OrderJPA> result = orderRepository.findFirstByUuidAndCompany_Uuid(order1Id, companyId);
         // create order with same company and same scoreboardnumber
-        Order order = new Order();
-        Order existingOrder = result.get();
-        Company company = existingOrder.getCompany();
+        OrderJPA order = new OrderJPA();
+        OrderJPA existingOrder = result.get();
+        CompanyJPA company = existingOrder.getCompany();
         order.setCompany(company);
         order.setScoreBoardNumber(existingOrder.getScoreBoardNumber());
         order.setState(IN_PROGRESS);
@@ -81,16 +81,16 @@ class OrderRepositoryTest {
     @Sql({"classpath:company_test.sql", "classpath:order_test.sql"})
     void save() {
         // create order with same company and same scoreboardnumber
-        Order order = new Order();
+        OrderJPA order = new OrderJPA();
         assertNull(order.getCreatedDate());
         assertNull(order.getLastModifiedDate());
         order.setState(IN_PROGRESS);
         order.setScoreBoardNumber(2);
         order.setTitle("Title");
-        Company company = companyRepository.findById(companyId).get();
+        CompanyJPA company = companyRepository.findById(companyId).get();
         order.setCompany(company);
 
-        Order savedOrder = orderRepository.saveAndFlush(order);
+        OrderJPA savedOrder = orderRepository.saveAndFlush(order);
 
         // make sure these dates are set
         assertNotNull(savedOrder.getLastModifiedDate());

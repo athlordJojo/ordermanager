@@ -11,7 +11,7 @@ import java.util.UUID;
 @Entity
 @Data
 @Table(name = "company")
-public class Company {
+public class CompanyJPA {
     @GeneratedValue(generator = "uuid2")
     @GenericGenerator(name = "uuid2", strategy = "uuid2")
     @Column(columnDefinition = "BINARY(16)")
@@ -30,15 +30,15 @@ public class Company {
             cascade = CascadeType.ALL,
             orphanRemoval = true
     )
-    private List<Order> orders = new ArrayList<>();
+    private List<OrderJPA> orders = new ArrayList<>();
 
 
-    public void addOrder(Order order){
+    public void addOrder(OrderJPA order){
         orders.add(order);
         order.setCompany(this);
     }
 
-    public void deleteOrder(Order order){
+    public void deleteOrder(OrderJPA order){
         orders.remove(order);
         order.setCompany(null);
     }

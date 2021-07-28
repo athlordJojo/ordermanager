@@ -8,7 +8,7 @@ import org.springframework.test.context.jdbc.Sql;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @DataJpaTest
-class CompanyRepositoryTest {
+class CompanyJPARepositoryTest {
 
     @Autowired
     CompanyRepository repo;

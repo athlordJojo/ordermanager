@@ -1,6 +1,6 @@
 package de.raychouni.ordernotifier.services;
 
-import de.raychouni.order.adapter.out.persistence.entities.Company;
+import de.raychouni.order.adapter.out.persistence.entities.CompanyJPA;
 import de.raychouni.order.adapter.out.persistence.CompanyRepository;
 import org.springframework.stereotype.Service;
 
@@ -15,7 +15,7 @@ public class CompanyService {
         this.companyRepository = companyRepository;
     }
 
-    public List<Company> getAll() {
+    public List<CompanyJPA> getAll() {
         return companyRepository.findAll();
     }
 }

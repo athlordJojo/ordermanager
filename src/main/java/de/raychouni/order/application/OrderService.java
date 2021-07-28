@@ -1,11 +1,13 @@
 package de.raychouni.order.application;
 
-import de.raychouni.order.adapter.out.persistence.entities.Company;
-import de.raychouni.order.adapter.out.persistence.entities.Order;
+import de.raychouni.order.adapter.out.persistence.entities.CompanyJPA;
+import de.raychouni.order.adapter.out.persistence.entities.OrderJPA;
 import de.raychouni.order.adapter.out.persistence.CompanyRepository;
 import de.raychouni.order.adapter.out.persistence.OrderRepository;
 import de.raychouni.order.application.port.in.GetAllOrdersForCompanyCommand;
 import de.raychouni.order.application.port.in.GetAllOrdersForCompanyUseCase;
+import de.raychouni.order.application.port.out.LoadOrdersOfCompanyPort;
+import de.raychouni.order.domain.Order;
 import de.raychouni.ordernotifier.services.OrderUpdate;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
@@ -23,20 +25,22 @@ public class OrderService implements GetAllOrdersForCompanyUseCase {
     private final OrderRepository orderRepository;
     private final CompanyRepository companyRepository;
     private final ApplicationEventPublisher eventPublisher;
+    private final LoadOrdersOfCompanyPort loadOrdersOfCompanyPort;
 
-    public OrderService(OrderRepository orderRepository, CompanyRepository companyRepository, ApplicationEventPublisher eventPublisher) {
+    public OrderService(OrderRepository orderRepository, CompanyRepository companyRepository, ApplicationEventPublisher eventPublisher, LoadOrdersOfCompanyPort loadOrdersOfCompanyPort) {
         this.orderRepository = orderRepository;
         this.companyRepository = companyRepository;
         this.eventPublisher = eventPublisher;
+        this.loadOrdersOfCompanyPort = loadOrdersOfCompanyPort;
     }
 
     @Override
     public List<Order> getAllOrdersByCompanyId(GetAllOrdersForCompanyCommand getAllOrdersForCompanyCommand) {
-        return orderRepository.findAllByCompany_Uuid(getAllOrdersForCompanyCommand.getCompanyUuid());
+        return loadOrdersOfCompanyPort.loadOrdersOfCompany(getAllOrdersForCompanyCommand.getCompanyUuid());
     }
 
-    public Order createOrder(UUID companyId, Order order) {
-        Company c = companyRepository.findById(companyId).orElseThrow(EntityNotFoundException::new);
+    public OrderJPA createOrder(UUID companyId, OrderJPA order) {
+        CompanyJPA c = companyRepository.findById(companyId).orElseThrow(EntityNotFoundException::new);
         orderRepository.saveAndFlush(order);
         c.addOrder(order);
         companyRepository.save(c);
@@ -44,7 +48,7 @@ public class OrderService implements GetAllOrdersForCompanyUseCase {
         return order;
     }
 
-    public Order updateOrder(Order updateOrder, UUID companyId, UUID orderToUpdate) {
+    public OrderJPA updateOrder(OrderJPA updateOrder, UUID companyId, UUID orderToUpdate) {
         return orderRepository.findFirstByUuidAndCompany_Uuid(orderToUpdate, companyId).map(existingOrder -> {
             existingOrder.setState(updateOrder.getState());
             existingOrder.setScoreBoardNumber(updateOrder.getScoreBoardNumber());
@@ -55,7 +59,7 @@ public class OrderService implements GetAllOrdersForCompanyUseCase {
     }
 
     public void deleteOrder(UUID companyId, UUID orderId) {
-        Order order = orderRepository.findFirstByUuidAndCompany_Uuid(orderId, companyId)
+        OrderJPA order = orderRepository.findFirstByUuidAndCompany_Uuid(orderId, companyId)
                 .orElseThrow(() -> new EntityNotFoundException("Could not find Order with id" + orderId + " for companyId: " + companyId));
         orderRepository.delete(order);
         publishChange(DELETED);

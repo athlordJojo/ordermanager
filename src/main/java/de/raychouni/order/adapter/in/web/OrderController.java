@@ -2,8 +2,9 @@ package de.raychouni.order.adapter.in.web;
 
 import de.raychouni.order.application.port.in.GetAllOrdersForCompanyCommand;
 import de.raychouni.order.application.port.in.GetAllOrdersForCompanyUseCase;
+import de.raychouni.order.domain.Order;
 import de.raychouni.ordernotifier.dtos.OrderDto;
-import de.raychouni.order.adapter.out.persistence.entities.Order;
+import de.raychouni.order.adapter.out.persistence.entities.OrderJPA;
 import de.raychouni.order.application.OrderService;
 import de.raychouni.ordernotifier.services.OrderUpdate;
 import lombok.extern.slf4j.Slf4j;
@@ -47,7 +48,7 @@ public class OrderController {
     @PostMapping("/companies/{companyId}/orders")
     @ResponseStatus(HttpStatus.CREATED)
     public OrderDto createOrder(@RequestBody OrderDto orderDto, @PathVariable("companyId") UUID companyId) {
-        Order createdOrder = orderService.createOrder(companyId, modelMapper.map(orderDto, Order.class));
+        OrderJPA createdOrder = orderService.createOrder(companyId, modelMapper.map(orderDto, OrderJPA.class));
         return modelMapper.map(createdOrder, OrderDto.class);
     }
 
@@ -55,7 +56,7 @@ public class OrderController {
     @ResponseStatus(HttpStatus.OK)
     public OrderDto updateOrder(@RequestBody OrderDto orderDto, @PathVariable("companyId") UUID companyId,
                                 @PathVariable("orderId") UUID orderId) {
-        Order updatedOrder = orderService.updateOrder(modelMapper.map(orderDto, Order.class), companyId, orderId);
+        OrderJPA updatedOrder = orderService.updateOrder(modelMapper.map(orderDto, OrderJPA.class), companyId, orderId);
         return modelMapper.map(updatedOrder, OrderDto.class);
     }
 

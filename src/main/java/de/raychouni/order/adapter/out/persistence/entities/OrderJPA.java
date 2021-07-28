@@ -15,7 +15,7 @@ import java.util.UUID;
 @Table(name = "order_table", uniqueConstraints =
 @UniqueConstraint(columnNames = {"company_uuid", "scoreBoardNumber"}))
 @EntityListeners(AuditingEntityListener.class)
-public class Order {
+public class OrderJPA {
 
     @GeneratedValue(generator = "uuid2")
     @GenericGenerator(name = "uuid2", strategy = "uuid2")
@@ -42,7 +42,7 @@ public class Order {
     private Date lastModifiedDate;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    private Company company;
+    private CompanyJPA company;
 
 
     public enum State {

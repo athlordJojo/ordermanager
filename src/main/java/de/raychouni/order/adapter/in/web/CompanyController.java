@@ -1,7 +1,7 @@
 package de.raychouni.order.adapter.in.web;
 
 import de.raychouni.ordernotifier.dtos.CompanyDto;
-import de.raychouni.order.adapter.out.persistence.entities.Company;
+import de.raychouni.order.adapter.out.persistence.entities.CompanyJPA;
 import de.raychouni.ordernotifier.services.CompanyService;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
@@ -27,7 +27,7 @@ public class CompanyController {
     @ResponseBody
     @ResponseStatus(HttpStatus.OK)
     public List<CompanyDto> getCustomers() {
-        List<Company> all = companyService.getAll();
+        List<CompanyJPA> all = companyService.getAll();
         return all.stream()
                 .map(company -> modelMapper.map(company, CompanyDto.class))
                 .collect(Collectors.toList());
