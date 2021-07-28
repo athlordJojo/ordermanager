@@ -1,7 +1,7 @@
 package de.raychouni.ordernotifier.services;
 
 import de.raychouni.ordernotifier.entities.Company;
-import de.raychouni.ordernotifier.repos.CompanyRepository;
+import de.raychouni.order.adapter.out.persistence.CompanyRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

@@ -1,8 +1,9 @@
-package de.raychouni.ordernotifier.repos;
+package de.raychouni.order.adapter.out.persistence;
 
+import de.raychouni.order.adapter.out.persistence.CompanyRepository;
+import de.raychouni.order.adapter.out.persistence.OrderRepository;
 import de.raychouni.ordernotifier.entities.Company;
 import de.raychouni.ordernotifier.entities.Order;
-import de.raychouni.ordernotifier.entities.Order.State;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;

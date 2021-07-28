@@ -2,9 +2,8 @@ package de.raychouni.ordernotifier.services;
 
 import de.raychouni.ordernotifier.entities.Company;
 import de.raychouni.ordernotifier.entities.Order;
-import de.raychouni.ordernotifier.repos.CompanyRepository;
-import de.raychouni.ordernotifier.repos.OrderRepository;
-import org.aspectj.weaver.ast.Or;
+import de.raychouni.order.adapter.out.persistence.CompanyRepository;
+import de.raychouni.order.adapter.out.persistence.OrderRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

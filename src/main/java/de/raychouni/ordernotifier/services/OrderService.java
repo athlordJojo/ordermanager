@@ -2,8 +2,8 @@ package de.raychouni.ordernotifier.services;
 
 import de.raychouni.ordernotifier.entities.Company;
 import de.raychouni.ordernotifier.entities.Order;
-import de.raychouni.ordernotifier.repos.CompanyRepository;
-import de.raychouni.ordernotifier.repos.OrderRepository;
+import de.raychouni.order.adapter.out.persistence.CompanyRepository;
+import de.raychouni.order.adapter.out.persistence.OrderRepository;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 
