@@ -1,7 +1,7 @@
-package de.raychouni.ordernotifier.http;
+package de.raychouni.order.adapter.in.web;
 
 import de.raychouni.ordernotifier.dtos.OrderDto;
-import de.raychouni.ordernotifier.entities.Order;
+import de.raychouni.order.adapter.out.persistence.entities.Order;
 import de.raychouni.ordernotifier.services.OrderService;
 import de.raychouni.ordernotifier.services.OrderUpdate;
 import lombok.extern.slf4j.Slf4j;

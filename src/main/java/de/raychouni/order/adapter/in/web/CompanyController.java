@@ -1,7 +1,7 @@
-package de.raychouni.ordernotifier.http;
+package de.raychouni.order.adapter.in.web;
 
 import de.raychouni.ordernotifier.dtos.CompanyDto;
-import de.raychouni.ordernotifier.entities.Company;
+import de.raychouni.order.adapter.out.persistence.entities.Company;
 import de.raychouni.ordernotifier.services.CompanyService;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
