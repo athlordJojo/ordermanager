@@ -6,7 +6,7 @@ import de.raychouni.order.domain.Order;
 import de.raychouni.ordernotifier.dtos.OrderDto;
 import de.raychouni.order.adapter.out.persistence.entities.OrderJPA;
 import de.raychouni.order.application.OrderService;
-import de.raychouni.ordernotifier.services.OrderUpdate;
+import de.raychouni.order.domain.OrderUpdate;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;

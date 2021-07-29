@@ -6,7 +6,7 @@ import de.raychouni.ordernotifier.dtos.CompanyDto;
 import de.raychouni.ordernotifier.dtos.OrderDto;
 import de.raychouni.company.adapter.out.persistence.CompanyRepository;
 import de.raychouni.order.adapter.out.persistence.OrderRepository;
-import de.raychouni.ordernotifier.services.OrderUpdate;
+import de.raychouni.order.domain.OrderUpdate;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,7 +33,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeoutException;
 
-import static de.raychouni.ordernotifier.services.OrderUpdate.CHANGE_TYPE.*;
+import static de.raychouni.order.domain.OrderUpdate.CHANGE_TYPE.*;
 import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.http.HttpMethod.*;

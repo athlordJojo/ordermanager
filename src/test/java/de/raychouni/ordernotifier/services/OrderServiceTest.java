@@ -5,8 +5,11 @@ import de.raychouni.company.adapter.out.persistence.CompanyRepository;
 import de.raychouni.order.adapter.out.persistence.OrderRepository;
 import de.raychouni.order.application.OrderService;
 import de.raychouni.order.application.port.in.GetAllOrdersForCompanyCommand;
+import de.raychouni.order.application.port.out.DeleteOrderOfCompanyPort;
 import de.raychouni.order.application.port.out.LoadOrdersOfCompanyPort;
+import de.raychouni.order.application.port.out.OrderChangedPort;
 import de.raychouni.order.domain.Order;
+import de.raychouni.order.domain.OrderUpdate;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -14,9 +17,11 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.context.ApplicationEventPublisher;
 
+import javax.persistence.EntityNotFoundException;
 import java.util.List;
 import java.util.UUID;
 
+import static de.raychouni.order.domain.OrderUpdate.CHANGE_TYPE.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
@@ -35,13 +40,19 @@ class OrderServiceTest {
     @Mock
     LoadOrdersOfCompanyPort loadOrdersOfCompanyPort;
 
+    @Mock
+    DeleteOrderOfCompanyPort deleteOrderOfCompanyPort;
+
+    @Mock
+    OrderChangedPort orderChangedPort;
+
     private OrderService orderService;
     private Order order;
     private CompanyJPA company;
 
     @BeforeEach
     void setUp() {
-        orderService = new OrderService(orderRepository, companyRepository, eventPublisher, loadOrdersOfCompanyPort);
+        orderService = new OrderService(orderRepository, companyRepository, eventPublisher, loadOrdersOfCompanyPort, deleteOrderOfCompanyPort, orderChangedPort);
         order = new Order();
         order.setState(Order.State.IN_PROGRESS);
         order.setUuid(UUID.randomUUID());
@@ -124,26 +135,24 @@ class OrderServiceTest {
 //        verify(orderRepository).save(order);
 //    }
 //
-//    @Test
-//    void deleteOrder_withNonExistingCompanyOrderCombination_expectException() {
-//        when(orderRepository.findFirstByUuidAndCompany_Uuid(order.getUuid(), company.getUuid())).thenReturn(Optional.empty());
-//        assertThrows(EntityNotFoundException.class, () -> {
-//            orderService.deleteOrder(company.getUuid(), order.getUuid());
-//        });
-//
-//        verify(orderRepository).findFirstByUuidAndCompany_Uuid(order.getUuid(), company.getUuid());
-//        verify(orderRepository, never()).delete(any());
-//        verify(eventPublisher, never()).publishEvent(any());
-//    }
-//
-//    @Test
-//    void deleteOrder_withExistingCompanyOrderCombination_expectSuccess() {
-//        when(orderRepository.findFirstByUuidAndCompany_Uuid(order.getUuid(), company.getUuid())).thenReturn(Optional.of(order));
-//
-//        orderService.deleteOrder(company.getUuid(), order.getUuid());
-//
-//        verify(orderRepository).findFirstByUuidAndCompany_Uuid(order.getUuid(), company.getUuid());
-//        verify(orderRepository).delete(order);
-//        verify(eventPublisher).publishEvent(new OrderUpdate(DELETED));
-//    }
+    @Test
+    void deleteOrder_withNonExistingCompanyOrderCombination_expectException() {
+        doThrow(new EntityNotFoundException()).when(deleteOrderOfCompanyPort).deleteOrderOfCompany(company.getUuid(), order.getUuid());
+        assertThrows(EntityNotFoundException.class, () -> {
+            orderService.deleteOrder(company.getUuid(), order.getUuid());
+        });
+
+        verify(deleteOrderOfCompanyPort).deleteOrderOfCompany(company.getUuid(), order.getUuid());
+        verify(orderChangedPort, never()).sendOrderChangedMessage(DELETED);
+    }
+
+    @Test
+    void deleteOrder_withExistingCompanyOrderCombination_expectSuccess() {
+        when(deleteOrderOfCompanyPort.deleteOrderOfCompany(company.getUuid(), order.getUuid())).thenReturn(order);
+
+        orderService.deleteOrder(company.getUuid(), order.getUuid());
+
+        verify(deleteOrderOfCompanyPort).deleteOrderOfCompany(company.getUuid(), order.getUuid());
+        verify(orderChangedPort).sendOrderChangedMessage(DELETED);
+    }
 }

@@ -6,9 +6,11 @@ import de.raychouni.company.adapter.out.persistence.CompanyRepository;
 import de.raychouni.order.adapter.out.persistence.OrderRepository;
 import de.raychouni.order.application.port.in.GetAllOrdersForCompanyCommand;
 import de.raychouni.order.application.port.in.GetAllOrdersForCompanyUseCase;
+import de.raychouni.order.application.port.out.DeleteOrderOfCompanyPort;
 import de.raychouni.order.application.port.out.LoadOrdersOfCompanyPort;
+import de.raychouni.order.application.port.out.OrderChangedPort;
 import de.raychouni.order.domain.Order;
-import de.raychouni.ordernotifier.services.OrderUpdate;
+import de.raychouni.order.domain.OrderUpdate;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 
@@ -17,7 +19,7 @@ import javax.transaction.Transactional;
 import java.util.List;
 import java.util.UUID;
 
-import static de.raychouni.ordernotifier.services.OrderUpdate.CHANGE_TYPE.*;
+import static de.raychouni.order.domain.OrderUpdate.CHANGE_TYPE.*;
 
 @Service
 @Transactional
@@ -26,12 +28,16 @@ public class OrderService implements GetAllOrdersForCompanyUseCase {
     private final CompanyRepository companyRepository;
     private final ApplicationEventPublisher eventPublisher;
     private final LoadOrdersOfCompanyPort loadOrdersOfCompanyPort;
+    private final DeleteOrderOfCompanyPort deleteOrderOfCompanyPort;
+    private final OrderChangedPort orderChangedPort;
 
-    public OrderService(OrderRepository orderRepository, CompanyRepository companyRepository, ApplicationEventPublisher eventPublisher, LoadOrdersOfCompanyPort loadOrdersOfCompanyPort) {
+    public OrderService(OrderRepository orderRepository, CompanyRepository companyRepository, ApplicationEventPublisher eventPublisher, LoadOrdersOfCompanyPort loadOrdersOfCompanyPort, DeleteOrderOfCompanyPort deleteOrderOfCompanyPort, OrderChangedPort orderChangedPort) {
         this.orderRepository = orderRepository;
         this.companyRepository = companyRepository;
         this.eventPublisher = eventPublisher;
         this.loadOrdersOfCompanyPort = loadOrdersOfCompanyPort;
+        this.deleteOrderOfCompanyPort = deleteOrderOfCompanyPort;
+        this.orderChangedPort = orderChangedPort;
     }
 
     @Override
@@ -59,10 +65,8 @@ public class OrderService implements GetAllOrdersForCompanyUseCase {
     }
 
     public void deleteOrder(UUID companyId, UUID orderId) {
-        OrderJPA order = orderRepository.findFirstByUuidAndCompany_Uuid(orderId, companyId)
-                .orElseThrow(() -> new EntityNotFoundException("Could not find Order with id" + orderId + " for companyId: " + companyId));
-        orderRepository.delete(order);
-        publishChange(DELETED);
+        deleteOrderOfCompanyPort.deleteOrderOfCompany(companyId, orderId);
+        orderChangedPort.sendOrderChangedMessage(DELETED);
     }
 
     private void publishChange(OrderUpdate.CHANGE_TYPE changeType) {

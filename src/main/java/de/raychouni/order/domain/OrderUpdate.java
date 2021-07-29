@@ -1,4 +1,4 @@
-package de.raychouni.ordernotifier.services;
+package de.raychouni.order.domain;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
