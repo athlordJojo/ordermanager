@@ -1,5 +1,7 @@
 package de.raychouni.order.adapter.in.web;
 
+import de.raychouni.order.application.port.in.DeleteOrderOfCompanyCommand;
+import de.raychouni.order.application.port.in.DeleteOrderOfCompanyUseCase;
 import de.raychouni.order.application.port.in.GetAllOrdersForCompanyCommand;
 import de.raychouni.order.application.port.in.GetAllOrdersForCompanyUseCase;
 import de.raychouni.order.domain.Order;
@@ -29,12 +31,17 @@ public class OrderController {
     private final ModelMapper modelMapper;
     private SimpMessagingTemplate simpMessagingTemplate;
     private final GetAllOrdersForCompanyUseCase getAllOrdersForCompanyUseCase;
+    private final DeleteOrderOfCompanyUseCase deleteOrderOfCompanyUseCase;
 
-    public OrderController(OrderService orderService, ModelMapper modelMapper, SimpMessagingTemplate simpMessagingTemplate, GetAllOrdersForCompanyUseCase getAllOrdersForCompanyUseCase) {
+    public OrderController(OrderService orderService, ModelMapper modelMapper,
+                           SimpMessagingTemplate simpMessagingTemplate,
+                           GetAllOrdersForCompanyUseCase getAllOrdersForCompanyUseCase,
+                           DeleteOrderOfCompanyUseCase deleteOrderOfCompanyUseCase) {
         this.orderService = orderService;
         this.modelMapper = modelMapper;
         this.simpMessagingTemplate = simpMessagingTemplate;
         this.getAllOrdersForCompanyUseCase = getAllOrdersForCompanyUseCase;
+        this.deleteOrderOfCompanyUseCase = deleteOrderOfCompanyUseCase;
     }
 
     @GetMapping("/companies/{companyId}/orders")
@@ -64,7 +71,7 @@ public class OrderController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public ResponseEntity<Void> deleteOrder(@PathVariable("companyId") UUID companyId,
                                             @PathVariable("orderId") UUID orderId) {
-        orderService.deleteOrder(companyId, orderId);
+        deleteOrderOfCompanyUseCase.deleteOrderOfCompany(new DeleteOrderOfCompanyCommand(companyId, orderId));
         return ResponseEntity.noContent().build();
     }
 

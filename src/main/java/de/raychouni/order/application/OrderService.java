@@ -4,6 +4,8 @@ import de.raychouni.company.adapter.out.persistence.entities.CompanyJPA;
 import de.raychouni.order.adapter.out.persistence.entities.OrderJPA;
 import de.raychouni.company.adapter.out.persistence.CompanyRepository;
 import de.raychouni.order.adapter.out.persistence.OrderRepository;
+import de.raychouni.order.application.port.in.DeleteOrderOfCompanyCommand;
+import de.raychouni.order.application.port.in.DeleteOrderOfCompanyUseCase;
 import de.raychouni.order.application.port.in.GetAllOrdersForCompanyCommand;
 import de.raychouni.order.application.port.in.GetAllOrdersForCompanyUseCase;
 import de.raychouni.order.application.port.out.DeleteOrderOfCompanyPort;
@@ -11,6 +13,7 @@ import de.raychouni.order.application.port.out.LoadOrdersOfCompanyPort;
 import de.raychouni.order.application.port.out.OrderChangedPort;
 import de.raychouni.order.domain.Order;
 import de.raychouni.order.domain.OrderUpdate;
+import lombok.NonNull;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 
@@ -23,7 +26,7 @@ import static de.raychouni.order.domain.OrderUpdate.CHANGE_TYPE.*;
 
 @Service
 @Transactional
-public class OrderService implements GetAllOrdersForCompanyUseCase {
+public class OrderService implements GetAllOrdersForCompanyUseCase, DeleteOrderOfCompanyUseCase {
     private final OrderRepository orderRepository;
     private final CompanyRepository companyRepository;
     private final ApplicationEventPublisher eventPublisher;
@@ -64,8 +67,9 @@ public class OrderService implements GetAllOrdersForCompanyUseCase {
         }).orElseThrow(() -> new EntityNotFoundException("Could not find Order with id" + orderToUpdate + " for companyId: " + companyId));
     }
 
-    public void deleteOrder(UUID companyId, UUID orderId) {
-        deleteOrderOfCompanyPort.deleteOrderOfCompany(companyId, orderId);
+    @Override
+    public void deleteOrderOfCompany(@NonNull DeleteOrderOfCompanyCommand deleteOrderOfCommand) {
+        deleteOrderOfCompanyPort.deleteOrderOfCompany(deleteOrderOfCommand.getCompanyId(), deleteOrderOfCommand.getOrderID());
         orderChangedPort.sendOrderChangedMessage(DELETED);
     }
 

@@ -4,6 +4,7 @@ import de.raychouni.company.adapter.out.persistence.entities.CompanyJPA;
 import de.raychouni.company.adapter.out.persistence.CompanyRepository;
 import de.raychouni.order.adapter.out.persistence.OrderRepository;
 import de.raychouni.order.application.OrderService;
+import de.raychouni.order.application.port.in.DeleteOrderOfCompanyCommand;
 import de.raychouni.order.application.port.in.GetAllOrdersForCompanyCommand;
 import de.raychouni.order.application.port.out.DeleteOrderOfCompanyPort;
 import de.raychouni.order.application.port.out.LoadOrdersOfCompanyPort;
@@ -139,7 +140,7 @@ class OrderServiceTest {
     void deleteOrder_withNonExistingCompanyOrderCombination_expectException() {
         doThrow(new EntityNotFoundException()).when(deleteOrderOfCompanyPort).deleteOrderOfCompany(company.getUuid(), order.getUuid());
         assertThrows(EntityNotFoundException.class, () -> {
-            orderService.deleteOrder(company.getUuid(), order.getUuid());
+            orderService.deleteOrderOfCompany(new DeleteOrderOfCompanyCommand(company.getUuid(), order.getUuid()));
         });
 
         verify(deleteOrderOfCompanyPort).deleteOrderOfCompany(company.getUuid(), order.getUuid());
@@ -150,7 +151,7 @@ class OrderServiceTest {
     void deleteOrder_withExistingCompanyOrderCombination_expectSuccess() {
         when(deleteOrderOfCompanyPort.deleteOrderOfCompany(company.getUuid(), order.getUuid())).thenReturn(order);
 
-        orderService.deleteOrder(company.getUuid(), order.getUuid());
+        orderService.deleteOrderOfCompany(new DeleteOrderOfCompanyCommand(company.getUuid(), order.getUuid()));
 
         verify(deleteOrderOfCompanyPort).deleteOrderOfCompany(company.getUuid(), order.getUuid());
         verify(orderChangedPort).sendOrderChangedMessage(DELETED);
