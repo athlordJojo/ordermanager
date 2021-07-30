@@ -3,7 +3,7 @@ package de.raychouni.order.adapter.in.web;
 import de.raychouni.order.application.port.in.GetAllOrdersForCompanyCommand;
 import de.raychouni.order.application.port.in.GetAllOrdersForCompanyUseCase;
 import de.raychouni.order.domain.Order;
-import de.raychouni.ordernotifier.dtos.OrderDto;
+import de.raychouni.order.adapter.in.web.dtos.OrderDto;
 import de.raychouni.order.adapter.out.persistence.entities.OrderJPA;
 import de.raychouni.order.application.OrderService;
 import de.raychouni.order.domain.OrderUpdate;

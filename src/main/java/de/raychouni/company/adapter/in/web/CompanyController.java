@@ -2,9 +2,7 @@ package de.raychouni.company.adapter.in.web;
 
 import de.raychouni.company.application.port.in.GetAllCompaniesUseCase;
 import de.raychouni.company.domain.Company;
-import de.raychouni.ordernotifier.dtos.CompanyDto;
-import de.raychouni.company.adapter.out.persistence.entities.CompanyJPA;
-import de.raychouni.company.application.CompanyService;
+import de.raychouni.company.adapter.in.web.dtos.CompanyDto;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;

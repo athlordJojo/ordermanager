@@ -1,4 +1,4 @@
-package de.raychouni.ordernotifier.dtos;
+package de.raychouni.company.adapter.in.web.dtos;
 
 import lombok.Getter;
 import lombok.Setter;

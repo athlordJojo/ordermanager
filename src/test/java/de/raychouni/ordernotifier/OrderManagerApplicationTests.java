@@ -2,8 +2,8 @@ package de.raychouni.ordernotifier;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import de.raychouni.ordernotifier.dtos.CompanyDto;
-import de.raychouni.ordernotifier.dtos.OrderDto;
+import de.raychouni.company.adapter.in.web.dtos.CompanyDto;
+import de.raychouni.order.adapter.in.web.dtos.OrderDto;
 import de.raychouni.company.adapter.out.persistence.CompanyRepository;
 import de.raychouni.order.adapter.out.persistence.OrderRepository;
 import de.raychouni.order.domain.OrderUpdate;
