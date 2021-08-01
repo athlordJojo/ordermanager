@@ -1,13 +1,12 @@
 package de.raychouni.order.application;
 
-import de.raychouni.company.adapter.out.persistence.entities.CompanyJPA;
-import de.raychouni.order.adapter.out.persistence.entities.OrderJPA;
 import de.raychouni.company.adapter.out.persistence.CompanyRepository;
+import de.raychouni.company.application.port.out.LoadCompanyByIdPort;
+import de.raychouni.company.domain.Company;
 import de.raychouni.order.adapter.out.persistence.OrderRepository;
-import de.raychouni.order.application.port.in.DeleteOrderOfCompanyCommand;
-import de.raychouni.order.application.port.in.DeleteOrderOfCompanyUseCase;
-import de.raychouni.order.application.port.in.GetAllOrdersForCompanyCommand;
-import de.raychouni.order.application.port.in.GetAllOrdersForCompanyUseCase;
+import de.raychouni.order.adapter.out.persistence.entities.OrderJPA;
+import de.raychouni.order.application.port.in.*;
+import de.raychouni.order.application.port.out.CreateOrderPort;
 import de.raychouni.order.application.port.out.DeleteOrderOfCompanyPort;
 import de.raychouni.order.application.port.out.LoadOrdersOfCompanyPort;
 import de.raychouni.order.application.port.out.OrderChangedPort;
@@ -26,35 +25,31 @@ import static de.raychouni.order.domain.OrderUpdate.CHANGE_TYPE.*;
 
 @Service
 @Transactional
-public class OrderService implements GetAllOrdersForCompanyUseCase, DeleteOrderOfCompanyUseCase {
+public class OrderService implements GetAllOrdersForCompanyUseCase, CreateOrderForCompanyUsecase, DeleteOrderOfCompanyUseCase {
     private final OrderRepository orderRepository;
     private final CompanyRepository companyRepository;
     private final ApplicationEventPublisher eventPublisher;
+    private final CreateOrderPort createOrderPort;
     private final LoadOrdersOfCompanyPort loadOrdersOfCompanyPort;
     private final DeleteOrderOfCompanyPort deleteOrderOfCompanyPort;
     private final OrderChangedPort orderChangedPort;
+    private final LoadCompanyByIdPort loadCompanyByIdPort;
 
-    public OrderService(OrderRepository orderRepository, CompanyRepository companyRepository, ApplicationEventPublisher eventPublisher, LoadOrdersOfCompanyPort loadOrdersOfCompanyPort, DeleteOrderOfCompanyPort deleteOrderOfCompanyPort, OrderChangedPort orderChangedPort) {
+
+    public OrderService(OrderRepository orderRepository, CompanyRepository companyRepository, ApplicationEventPublisher eventPublisher, CreateOrderPort createOrderPort, LoadOrdersOfCompanyPort loadOrdersOfCompanyPort, DeleteOrderOfCompanyPort deleteOrderOfCompanyPort, OrderChangedPort orderChangedPort, LoadCompanyByIdPort loadCompanyByIdPort) {
         this.orderRepository = orderRepository;
         this.companyRepository = companyRepository;
         this.eventPublisher = eventPublisher;
+        this.createOrderPort = createOrderPort;
         this.loadOrdersOfCompanyPort = loadOrdersOfCompanyPort;
         this.deleteOrderOfCompanyPort = deleteOrderOfCompanyPort;
         this.orderChangedPort = orderChangedPort;
+        this.loadCompanyByIdPort = loadCompanyByIdPort;
     }
 
     @Override
     public List<Order> getAllOrdersByCompanyId(GetAllOrdersForCompanyCommand getAllOrdersForCompanyCommand) {
         return loadOrdersOfCompanyPort.loadOrdersOfCompany(getAllOrdersForCompanyCommand.getCompanyUuid());
-    }
-
-    public OrderJPA createOrder(UUID companyId, OrderJPA order) {
-        CompanyJPA c = companyRepository.findById(companyId).orElseThrow(EntityNotFoundException::new);
-        orderRepository.saveAndFlush(order);
-        c.addOrder(order);
-        companyRepository.save(c);
-        publishChange(INSERTED);
-        return order;
     }
 
     public OrderJPA updateOrder(OrderJPA updateOrder, UUID companyId, UUID orderToUpdate) {
@@ -75,5 +70,18 @@ public class OrderService implements GetAllOrdersForCompanyUseCase, DeleteOrderO
 
     private void publishChange(OrderUpdate.CHANGE_TYPE changeType) {
         eventPublisher.publishEvent(new OrderUpdate(changeType));
+    }
+
+    @Override
+    public Order createOrder(CreateOrderForCompanyCommand createOrderForCompanyCommand) {
+        Company company = loadCompanyByIdPort.loadCompanyById(createOrderForCompanyCommand.getCompanyId());
+        Order newOrder = new Order();
+        newOrder.setState(Order.State.IN_PROGRESS);
+        newOrder.setCompany(company);
+        newOrder.setScoreBoardNumber(createOrderForCompanyCommand.getScoreBoardNumber());
+
+        Order savedNewOrder = createOrderPort.createOrder(newOrder);
+        orderChangedPort.sendOrderChangedMessage(INSERTED);
+        return savedNewOrder;
     }
 }

@@ -1,5 +1,6 @@
 package de.raychouni.order.adapter.out.persistence;
 
+import de.raychouni.company.adapter.out.persistence.CompanyRepository;
 import de.raychouni.company.adapter.out.persistence.entities.CompanyJPA;
 import de.raychouni.order.adapter.out.persistence.entities.OrderJPA;
 import de.raychouni.order.domain.Order;
@@ -27,6 +28,9 @@ class OrderPersistenceAdapterTest {
     @Mock
     OrderRepository orderRepository;
 
+    @Mock
+    CompanyRepository companyRepository;
+
     OrderPersistenceAdapter adapter;
 
     OrderJPA order;
@@ -37,7 +41,7 @@ class OrderPersistenceAdapterTest {
     void setUp() {
         orderId = UUID.randomUUID();
 
-        adapter = new OrderPersistenceAdapter(orderRepository, new ModelMapper());
+        adapter = new OrderPersistenceAdapter(orderRepository, companyRepository, new ModelMapper());
         order = new OrderJPA();
         order.setState(OrderJPA.State.IN_PROGRESS);
         order.setUuid(orderId);
@@ -81,5 +85,7 @@ class OrderPersistenceAdapterTest {
         adapter.deleteOrderOfCompany(companyId, orderId);
         verify(orderRepository).findFirstByUuidAndCompany_Uuid(orderId, companyId);
     }
+
+    // TODO test for createOrder
 
 }

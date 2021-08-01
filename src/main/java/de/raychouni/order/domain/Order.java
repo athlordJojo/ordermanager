@@ -1,12 +1,15 @@
 package de.raychouni.order.domain;
 
-import de.raychouni.company.adapter.out.persistence.entities.CompanyJPA;
+import de.raychouni.company.domain.Company;
 import lombok.Data;
+import lombok.Setter;
+import lombok.experimental.Accessors;
 
 import java.util.Date;
 import java.util.UUID;
 
 @Data
+//@Accessors(fluent = true)
 public class Order {
     private UUID uuid;
     private String name;
@@ -16,7 +19,7 @@ public class Order {
     private String title;
     private Date createdDate;
     private Date lastModifiedDate;
-    private CompanyJPA company;
+    private Company company;
 
     public enum State {
         IN_PROGRESS,

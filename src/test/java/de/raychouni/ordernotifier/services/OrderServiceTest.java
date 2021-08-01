@@ -1,19 +1,23 @@
 package de.raychouni.ordernotifier.services;
 
-import de.raychouni.company.adapter.out.persistence.entities.CompanyJPA;
 import de.raychouni.company.adapter.out.persistence.CompanyRepository;
+import de.raychouni.company.application.port.out.LoadCompanyByIdPort;
+import de.raychouni.company.domain.Company;
+import de.raychouni.order.adapter.in.web.dtos.OrderDto;
 import de.raychouni.order.adapter.out.persistence.OrderRepository;
 import de.raychouni.order.application.OrderService;
+import de.raychouni.order.application.port.in.CreateOrderForCompanyCommand;
 import de.raychouni.order.application.port.in.DeleteOrderOfCompanyCommand;
 import de.raychouni.order.application.port.in.GetAllOrdersForCompanyCommand;
+import de.raychouni.order.application.port.out.CreateOrderPort;
 import de.raychouni.order.application.port.out.DeleteOrderOfCompanyPort;
 import de.raychouni.order.application.port.out.LoadOrdersOfCompanyPort;
 import de.raychouni.order.application.port.out.OrderChangedPort;
 import de.raychouni.order.domain.Order;
-import de.raychouni.order.domain.OrderUpdate;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.context.ApplicationEventPublisher;
@@ -22,7 +26,8 @@ import javax.persistence.EntityNotFoundException;
 import java.util.List;
 import java.util.UUID;
 
-import static de.raychouni.order.domain.OrderUpdate.CHANGE_TYPE.*;
+import static de.raychouni.order.domain.OrderUpdate.CHANGE_TYPE.DELETED;
+import static de.raychouni.order.domain.OrderUpdate.CHANGE_TYPE.INSERTED;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
@@ -45,22 +50,30 @@ class OrderServiceTest {
     DeleteOrderOfCompanyPort deleteOrderOfCompanyPort;
 
     @Mock
+    CreateOrderPort createOrderPort;
+
+    @Mock
     OrderChangedPort orderChangedPort;
+
+    @Mock
+    LoadCompanyByIdPort loadCompanyByIdPort;
 
     private OrderService orderService;
     private Order order;
-    private CompanyJPA company;
+    private Company company;
 
     @BeforeEach
     void setUp() {
-        orderService = new OrderService(orderRepository, companyRepository, eventPublisher, loadOrdersOfCompanyPort, deleteOrderOfCompanyPort, orderChangedPort);
-        order = new Order();
-        order.setState(Order.State.IN_PROGRESS);
-        order.setUuid(UUID.randomUUID());
-        order.setScoreBoardNumber(1);
-        order.setTitle("title1");
-        company = new CompanyJPA();
+        company = new Company();
         company.setUuid(UUID.randomUUID());
+
+        orderService = new OrderService(orderRepository, companyRepository, eventPublisher, createOrderPort, loadOrdersOfCompanyPort, deleteOrderOfCompanyPort, orderChangedPort, loadCompanyByIdPort);
+
+        order = new Order();
+        order.setUuid(UUID.randomUUID());
+        order.setState(Order.State.IN_PROGRESS);
+        order.setCompany(company);
+        order.setScoreBoardNumber(1);
     }
 
     @Test
@@ -72,29 +85,37 @@ class OrderServiceTest {
         assertEquals(order, ordersByCompanyId.get(0));
         verify(eventPublisher, never()).publishEvent(any());
     }
-//
-//    @Test
-//    void createOrder_withNonExistingCompanyId_expectException() {
-//        when(companyRepository.findById(company.getUuid())).thenReturn(Optional.empty());
-//        assertThrows(EntityNotFoundException.class, () -> {
-//            orderService.createOrder(company.getUuid(), order);
-//        });
-//
-//        verify(eventPublisher, never()).publishEvent(any());
-//    }
-//
-//    @Test
-//    void createOrder_withExistingCompanyId_expectSuccess() {
-//        Optional<CompanyJPA> optionalCompany = Optional.of(company);
-//        when(companyRepository.findById(company.getUuid())).thenReturn(optionalCompany);
-//        orderService.createOrder(company.getUuid(), order);
-//
-//        assertEquals(1, company.getOrders().size());
-//
-//        verify(orderRepository).saveAndFlush(order);
-//        verify(companyRepository).save(company);
-//        verify(eventPublisher).publishEvent(eq(new OrderUpdate(INSERTED)));
-//    }
+
+    @Test
+    void createOrder_withNonExistingCompanyId_expectException() {
+        doThrow(new EntityNotFoundException()).when(loadCompanyByIdPort).loadCompanyById(company.getUuid());
+        assertThrows(EntityNotFoundException.class, () -> {
+            orderService.createOrder(new CreateOrderForCompanyCommand(company.getUuid(), order.getScoreBoardNumber()));
+        });
+
+        verify(orderChangedPort, never()).sendOrderChangedMessage(any());
+    }
+
+    @Test
+    void createOrder_withExistingCompanyId_expectSuccess() {
+        Order orderWithoutId = new Order();
+        orderWithoutId.setState(Order.State.IN_PROGRESS);
+        orderWithoutId.setCompany(company);
+        orderWithoutId.setScoreBoardNumber(1);
+
+        assertNull(orderWithoutId.getUuid());
+        when(loadCompanyByIdPort.loadCompanyById(company.getUuid())).thenReturn(company);
+        Order orderWithId = new Order();
+        orderWithId.setUuid(UUID.randomUUID());
+        orderWithId.setState(Order.State.IN_PROGRESS);
+        orderWithId.setCompany(company);
+        orderWithId.setScoreBoardNumber(1);
+        when(createOrderPort.createOrder(orderWithoutId)).thenReturn(orderWithId);
+
+        Order savedNewOrder = orderService.createOrder(new CreateOrderForCompanyCommand(company.getUuid(), orderWithoutId.getScoreBoardNumber()));
+        assertSame(orderWithId, savedNewOrder);
+        verify(orderChangedPort).sendOrderChangedMessage(INSERTED);
+    }
 //
 //    @Test
 //    void updateOrder_withNonExistingCompanyOrderCombination_expectException() {
