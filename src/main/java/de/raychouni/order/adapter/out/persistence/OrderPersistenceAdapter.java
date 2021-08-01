@@ -3,9 +3,7 @@ package de.raychouni.order.adapter.out.persistence;
 import de.raychouni.company.adapter.out.persistence.CompanyRepository;
 import de.raychouni.company.adapter.out.persistence.entities.CompanyJPA;
 import de.raychouni.order.adapter.out.persistence.entities.OrderJPA;
-import de.raychouni.order.application.port.out.CreateOrderPort;
-import de.raychouni.order.application.port.out.DeleteOrderOfCompanyPort;
-import de.raychouni.order.application.port.out.LoadOrdersOfCompanyPort;
+import de.raychouni.order.application.port.out.*;
 import de.raychouni.order.domain.Order;
 import lombok.NonNull;
 import org.modelmapper.ModelMapper;
@@ -17,7 +15,7 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Component
-public class OrderPersistenceAdapter implements LoadOrdersOfCompanyPort, DeleteOrderOfCompanyPort, CreateOrderPort {
+public class OrderPersistenceAdapter implements LoadOrdersOfCompanyPort, LoadOrderOfCompanyPort,  DeleteOrderOfCompanyPort, CreateOrderPort, UpdateOrderOfCompanyPort {
     private final OrderRepository orderRepository;
     private final CompanyRepository companyRepository;
     private final ModelMapper modelMapper;
@@ -29,6 +27,12 @@ public class OrderPersistenceAdapter implements LoadOrdersOfCompanyPort, DeleteO
     }
 
     @Override
+    public Order loadOrderOfCompany(UUID companyId, UUID orderId) {
+        OrderJPA orderJPA = getOrderJPAFromOrder(companyId, orderId);
+        return modelMapper.map(orderJPA, Order.class);
+    }
+
+    @Override
     public List<Order> loadOrdersOfCompany(UUID companyUuid) {
         List<OrderJPA> ordersOfCompany = orderRepository.findAllByCompany_Uuid(companyUuid);
         return ordersOfCompany.stream().map(order -> modelMapper.map(order, Order.class)).collect(Collectors.toList());
@@ -36,8 +40,7 @@ public class OrderPersistenceAdapter implements LoadOrdersOfCompanyPort, DeleteO
 
     @Override
     public Order deleteOrderOfCompany(UUID companyId, UUID orderId) {
-        OrderJPA orderJpa = orderRepository.findFirstByUuidAndCompany_Uuid(orderId, companyId)
-                .orElseThrow(() -> new EntityNotFoundException("Could not find Order with id" + orderId + " for companyId: " + companyId));
+        OrderJPA orderJpa = getOrderJPAFromOrder(companyId, orderId);
         orderJpa.getCompany().deleteOrder(orderJpa);
         Order order = modelMapper.map(orderJpa, Order.class);
         orderRepository.delete(orderJpa);
@@ -46,12 +49,28 @@ public class OrderPersistenceAdapter implements LoadOrdersOfCompanyPort, DeleteO
 
     @Override
     public Order createOrder(@NonNull Order orderToCreate) {
-        // TODO: use other adapter here ?
         CompanyJPA c = companyRepository.findById(orderToCreate.getCompany().getUuid()).orElseThrow(EntityNotFoundException::new);
         OrderJPA orderJPA = modelMapper.map(orderToCreate, OrderJPA.class);
         orderRepository.saveAndFlush(orderJPA);
         c.addOrder(orderJPA);
         companyRepository.save(c);
         return modelMapper.map(orderJPA, Order.class);
+    }
+
+    @Override
+    public Order updateOrderOfCompany(Order order) {
+        OrderJPA orderJPA = getOrderJPAFromOrder(order.getCompany().getUuid(), order.getUuid());
+        // TODO: may also use mapper here ?
+//        modelMapper.map(order, orderJPA); // does not work, fails with:
+        orderJPA.setScoreBoardNumber(order.getScoreBoardNumber());
+        orderJPA.setTitle(order.getTitle());
+        orderJPA.setState(OrderJPA.State.valueOf(order.getState().name()));
+        orderRepository.save(orderJPA);
+        return modelMapper.map(orderJPA, Order.class);
+    }
+
+    private OrderJPA getOrderJPAFromOrder(UUID companyId, UUID orderId) {
+        return orderRepository.findFirstByUuidAndCompany_Uuid(orderId, companyId)
+                .orElseThrow(() -> new EntityNotFoundException("Could not find Order with id" + orderId + " for companyId: " + companyId));
     }
 }

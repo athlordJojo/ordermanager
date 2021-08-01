@@ -6,10 +6,7 @@ import de.raychouni.company.domain.Company;
 import de.raychouni.order.adapter.out.persistence.OrderRepository;
 import de.raychouni.order.adapter.out.persistence.entities.OrderJPA;
 import de.raychouni.order.application.port.in.*;
-import de.raychouni.order.application.port.out.CreateOrderPort;
-import de.raychouni.order.application.port.out.DeleteOrderOfCompanyPort;
-import de.raychouni.order.application.port.out.LoadOrdersOfCompanyPort;
-import de.raychouni.order.application.port.out.OrderChangedPort;
+import de.raychouni.order.application.port.out.*;
 import de.raychouni.order.domain.Order;
 import de.raychouni.order.domain.OrderUpdate;
 import lombok.NonNull;
@@ -25,26 +22,30 @@ import static de.raychouni.order.domain.OrderUpdate.CHANGE_TYPE.*;
 
 @Service
 @Transactional
-public class OrderService implements GetAllOrdersForCompanyUseCase, CreateOrderForCompanyUsecase, DeleteOrderOfCompanyUseCase {
+public class OrderService implements GetAllOrdersForCompanyUseCase, CreateOrderForCompanyUsecase, UpdateOrderOfCompanyUseCase, DeleteOrderOfCompanyUseCase {
     private final OrderRepository orderRepository;
     private final CompanyRepository companyRepository;
     private final ApplicationEventPublisher eventPublisher;
     private final CreateOrderPort createOrderPort;
+    private final LoadOrderOfCompanyPort loadOrderOfCompanyPort;
     private final LoadOrdersOfCompanyPort loadOrdersOfCompanyPort;
     private final DeleteOrderOfCompanyPort deleteOrderOfCompanyPort;
     private final OrderChangedPort orderChangedPort;
     private final LoadCompanyByIdPort loadCompanyByIdPort;
+    private final UpdateOrderOfCompanyPort updateOrderOfCompanyPort;
 
 
-    public OrderService(OrderRepository orderRepository, CompanyRepository companyRepository, ApplicationEventPublisher eventPublisher, CreateOrderPort createOrderPort, LoadOrdersOfCompanyPort loadOrdersOfCompanyPort, DeleteOrderOfCompanyPort deleteOrderOfCompanyPort, OrderChangedPort orderChangedPort, LoadCompanyByIdPort loadCompanyByIdPort) {
+    public OrderService(OrderRepository orderRepository, CompanyRepository companyRepository, ApplicationEventPublisher eventPublisher, CreateOrderPort createOrderPort, LoadOrderOfCompanyPort loadOrderOfCompanyPort, LoadOrdersOfCompanyPort loadOrdersOfCompanyPort, DeleteOrderOfCompanyPort deleteOrderOfCompanyPort, OrderChangedPort orderChangedPort, LoadCompanyByIdPort loadCompanyByIdPort, UpdateOrderOfCompanyPort updateOrderOfCompanyPort) {
         this.orderRepository = orderRepository;
         this.companyRepository = companyRepository;
         this.eventPublisher = eventPublisher;
         this.createOrderPort = createOrderPort;
+        this.loadOrderOfCompanyPort = loadOrderOfCompanyPort;
         this.loadOrdersOfCompanyPort = loadOrdersOfCompanyPort;
         this.deleteOrderOfCompanyPort = deleteOrderOfCompanyPort;
         this.orderChangedPort = orderChangedPort;
         this.loadCompanyByIdPort = loadCompanyByIdPort;
+        this.updateOrderOfCompanyPort = updateOrderOfCompanyPort;
     }
 
     @Override
@@ -52,15 +53,15 @@ public class OrderService implements GetAllOrdersForCompanyUseCase, CreateOrderF
         return loadOrdersOfCompanyPort.loadOrdersOfCompany(getAllOrdersForCompanyCommand.getCompanyUuid());
     }
 
-    public OrderJPA updateOrder(OrderJPA updateOrder, UUID companyId, UUID orderToUpdate) {
-        return orderRepository.findFirstByUuidAndCompany_Uuid(orderToUpdate, companyId).map(existingOrder -> {
-            existingOrder.setState(updateOrder.getState());
-            existingOrder.setScoreBoardNumber(updateOrder.getScoreBoardNumber());
-            existingOrder.setTitle(updateOrder.getTitle());
-            publishChange(UPDATED);
-            return orderRepository.save(existingOrder);
-        }).orElseThrow(() -> new EntityNotFoundException("Could not find Order with id" + orderToUpdate + " for companyId: " + companyId));
-    }
+//    public OrderJPA updateOrder(OrderJPA updateOrder, UUID companyId, UUID orderToUpdate) {
+//        return orderRepository.findFirstByUuidAndCompany_Uuid(orderToUpdate, companyId).map(existingOrder -> {
+//            existingOrder.setState(updateOrder.getState());
+//            existingOrder.setScoreBoardNumber(updateOrder.getScoreBoardNumber());
+//            existingOrder.setTitle(updateOrder.getTitle());
+//            publishChange(UPDATED);
+//            return orderRepository.save(existingOrder);
+//        }).orElseThrow(() -> new EntityNotFoundException("Could not find Order with id" + orderToUpdate + " for companyId: " + companyId));
+//    }
 
     @Override
     public void deleteOrderOfCompany(@NonNull DeleteOrderOfCompanyCommand deleteOrderOfCommand) {
@@ -83,5 +84,17 @@ public class OrderService implements GetAllOrdersForCompanyUseCase, CreateOrderF
         Order savedNewOrder = createOrderPort.createOrder(newOrder);
         orderChangedPort.sendOrderChangedMessage(INSERTED);
         return savedNewOrder;
+    }
+
+    @Override
+    public Order updateOrder(UpdateOrderOfCompanyCommand updateOrderOfCompanyCommand) {
+        Order order = loadOrderOfCompanyPort.loadOrderOfCompany(updateOrderOfCompanyCommand.getCompanyId(), updateOrderOfCompanyCommand.getOrderId());
+        order.setScoreBoardNumber(updateOrderOfCompanyCommand.getScoreBoardNumber());
+        order.setTitle(updateOrderOfCompanyCommand.getTitle());
+        order.setState(updateOrderOfCompanyCommand.getState());
+
+        Order updatedOrder = updateOrderOfCompanyPort.updateOrderOfCompany(order);
+        orderChangedPort.sendOrderChangedMessage(UPDATED);
+        return updatedOrder;
     }
 }

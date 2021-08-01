@@ -24,24 +24,22 @@ import java.util.stream.Collectors;
 @Slf4j
 public class OrderController {
 
-    private final OrderService orderService;
     private final ModelMapper modelMapper;
-    private SimpMessagingTemplate simpMessagingTemplate;
     private final GetAllOrdersForCompanyUseCase getAllOrdersForCompanyUseCase;
     private final CreateOrderForCompanyUsecase createOrderForCompanyUsecase;
     private final DeleteOrderOfCompanyUseCase deleteOrderOfCompanyUseCase;
+    private final UpdateOrderOfCompanyUseCase updateOrderOfCompanyUseCase;
 
-    public OrderController(OrderService orderService, ModelMapper modelMapper,
-                           SimpMessagingTemplate simpMessagingTemplate,
+    public OrderController(ModelMapper modelMapper,
                            GetAllOrdersForCompanyUseCase getAllOrdersForCompanyUseCase,
                            CreateOrderForCompanyUsecase createOrderForCompanyUsecase,
-                           DeleteOrderOfCompanyUseCase deleteOrderOfCompanyUseCase) {
-        this.orderService = orderService;
+                           DeleteOrderOfCompanyUseCase deleteOrderOfCompanyUseCase,
+                           UpdateOrderOfCompanyUseCase updateOrderOfCompanyUseCase) {
         this.modelMapper = modelMapper;
-        this.simpMessagingTemplate = simpMessagingTemplate;
         this.getAllOrdersForCompanyUseCase = getAllOrdersForCompanyUseCase;
         this.createOrderForCompanyUsecase = createOrderForCompanyUsecase;
         this.deleteOrderOfCompanyUseCase = deleteOrderOfCompanyUseCase;
+        this.updateOrderOfCompanyUseCase = updateOrderOfCompanyUseCase;
     }
 
     @GetMapping("/companies/{companyId}/orders")
@@ -64,7 +62,8 @@ public class OrderController {
     @ResponseStatus(HttpStatus.OK)
     public OrderDto updateOrder(@RequestBody OrderDto orderDto, @PathVariable("companyId") UUID companyId,
                                 @PathVariable("orderId") UUID orderId) {
-        OrderJPA updatedOrder = orderService.updateOrder(modelMapper.map(orderDto, OrderJPA.class), companyId, orderId);
+        UpdateOrderOfCompanyCommand updateOrderOfCompanyCommand = new UpdateOrderOfCompanyCommand(companyId, orderId, orderDto.getScoreBoardNumber(), Order.State.valueOf(orderDto.getState()), orderDto.getTitle());
+        Order updatedOrder = updateOrderOfCompanyUseCase.updateOrder(updateOrderOfCompanyCommand);
         return modelMapper.map(updatedOrder, OrderDto.class);
     }
 
@@ -75,11 +74,4 @@ public class OrderController {
         deleteOrderOfCompanyUseCase.deleteOrderOfCompany(new DeleteOrderOfCompanyCommand(companyId, orderId));
         return ResponseEntity.noContent().build();
     }
-
-    @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
-    public void onEntityUpdate(OrderUpdate orderUpdate) {
-        log.debug("Sending order update");
-        simpMessagingTemplate.convertAndSend("/topic/orders", orderUpdate);
-    }
-
 }

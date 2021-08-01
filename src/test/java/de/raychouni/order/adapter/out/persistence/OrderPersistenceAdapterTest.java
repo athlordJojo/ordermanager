@@ -87,5 +87,5 @@ class OrderPersistenceAdapterTest {
     }
 
     // TODO test for createOrder
-
+    // TODO test for updateOrderOfCompany
 }

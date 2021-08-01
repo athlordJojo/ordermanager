@@ -9,10 +9,7 @@ import de.raychouni.order.application.OrderService;
 import de.raychouni.order.application.port.in.CreateOrderForCompanyCommand;
 import de.raychouni.order.application.port.in.DeleteOrderOfCompanyCommand;
 import de.raychouni.order.application.port.in.GetAllOrdersForCompanyCommand;
-import de.raychouni.order.application.port.out.CreateOrderPort;
-import de.raychouni.order.application.port.out.DeleteOrderOfCompanyPort;
-import de.raychouni.order.application.port.out.LoadOrdersOfCompanyPort;
-import de.raychouni.order.application.port.out.OrderChangedPort;
+import de.raychouni.order.application.port.out.*;
 import de.raychouni.order.domain.Order;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -58,6 +55,12 @@ class OrderServiceTest {
     @Mock
     LoadCompanyByIdPort loadCompanyByIdPort;
 
+    @Mock
+    LoadOrderOfCompanyPort loadOrderOfCompanyPort;
+
+    @Mock
+    UpdateOrderOfCompanyPort updateOrderOfCompanyPort;
+
     private OrderService orderService;
     private Order order;
     private Company company;
@@ -67,7 +70,7 @@ class OrderServiceTest {
         company = new Company();
         company.setUuid(UUID.randomUUID());
 
-        orderService = new OrderService(orderRepository, companyRepository, eventPublisher, createOrderPort, loadOrdersOfCompanyPort, deleteOrderOfCompanyPort, orderChangedPort, loadCompanyByIdPort);
+        orderService = new OrderService(orderRepository, companyRepository, eventPublisher, createOrderPort, loadOrderOfCompanyPort, loadOrdersOfCompanyPort, deleteOrderOfCompanyPort, orderChangedPort, loadCompanyByIdPort, updateOrderOfCompanyPort);
 
         order = new Order();
         order.setUuid(UUID.randomUUID());
