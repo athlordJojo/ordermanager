@@ -1,10 +1,7 @@
 package de.raychouni.ordernotifier.services;
 
-import de.raychouni.company.adapter.out.persistence.CompanyRepository;
 import de.raychouni.company.application.port.out.LoadCompanyByIdPort;
 import de.raychouni.company.domain.Company;
-import de.raychouni.order.adapter.in.web.dtos.OrderDto;
-import de.raychouni.order.adapter.out.persistence.OrderRepository;
 import de.raychouni.order.application.OrderService;
 import de.raychouni.order.application.port.in.CreateOrderForCompanyCommand;
 import de.raychouni.order.application.port.in.DeleteOrderOfCompanyCommand;
@@ -14,10 +11,8 @@ import de.raychouni.order.domain.Order;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.context.ApplicationEventPublisher;
 
 import javax.persistence.EntityNotFoundException;
 import java.util.List;
@@ -31,14 +26,6 @@ import static org.mockito.Mockito.*;
 @ExtendWith(MockitoExtension.class)
 class OrderServiceTest {
 
-    @Mock
-    CompanyRepository companyRepository;
-
-    @Mock
-    OrderRepository orderRepository;
-
-    @Mock
-    ApplicationEventPublisher eventPublisher;
 
     @Mock
     LoadOrdersOfCompanyPort loadOrdersOfCompanyPort;
@@ -70,7 +57,7 @@ class OrderServiceTest {
         company = new Company();
         company.setUuid(UUID.randomUUID());
 
-        orderService = new OrderService(orderRepository, companyRepository, eventPublisher, createOrderPort, loadOrderOfCompanyPort, loadOrdersOfCompanyPort, deleteOrderOfCompanyPort, orderChangedPort, loadCompanyByIdPort, updateOrderOfCompanyPort);
+        orderService = new OrderService(createOrderPort, loadOrderOfCompanyPort, loadOrdersOfCompanyPort, deleteOrderOfCompanyPort, orderChangedPort, loadCompanyByIdPort, updateOrderOfCompanyPort);
 
         order = new Order();
         order.setUuid(UUID.randomUUID());
@@ -86,7 +73,7 @@ class OrderServiceTest {
         assertNotNull(ordersByCompanyId);
         assertEquals(1, ordersByCompanyId.size());
         assertEquals(order, ordersByCompanyId.get(0));
-        verify(eventPublisher, never()).publishEvent(any());
+        verify(orderChangedPort, never()).sendOrderChangedMessage(any());
     }
 
     @Test
