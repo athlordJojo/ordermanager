@@ -1,4 +1,4 @@
-package de.raychouni.ordernotifier.config;
+package de.raychouni.configuration;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.boot.web.server.ErrorPage;
