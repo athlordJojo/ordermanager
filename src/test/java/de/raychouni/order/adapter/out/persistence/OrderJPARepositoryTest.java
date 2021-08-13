@@ -2,10 +2,12 @@ package de.raychouni.order.adapter.out.persistence;
 
 import de.raychouni.company.adapter.out.persistence.CompanyRepository;
 import de.raychouni.company.adapter.out.persistence.entities.CompanyJPA;
+import de.raychouni.configuration.JPAConfiguration;
 import de.raychouni.order.adapter.out.persistence.entities.OrderJPA;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.context.annotation.Import;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.test.context.jdbc.Sql;
 
@@ -16,6 +18,7 @@ import static de.raychouni.order.adapter.out.persistence.entities.OrderJPA.State
 import static org.junit.jupiter.api.Assertions.*;
 
 @DataJpaTest
+@Import(JPAConfiguration.class)
 class OrderJPARepositoryTest {
 
     @Autowired
