@@ -1,4 +1,4 @@
-package de.raychouni.ordernotifier.services;
+package de.raychouni.order.application;
 
 import de.raychouni.company.application.port.out.LoadCompanyByIdPort;
 import de.raychouni.company.domain.Company;
