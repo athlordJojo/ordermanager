@@ -51,6 +51,7 @@ public class OrderController {
     }
 
     @PostMapping("/companies/{companyId}/orders")
+    @ResponseBody
     @ResponseStatus(HttpStatus.CREATED)
     public OrderDto createOrder(@RequestBody OrderDto orderDto, @PathVariable("companyId") UUID companyId) {
         Order createdOrder = createOrderForCompanyUsecase.createOrder(
@@ -59,6 +60,7 @@ public class OrderController {
     }
 
     @PutMapping("/companies/{companyId}/orders/{orderId}")
+    @ResponseBody
     @ResponseStatus(HttpStatus.OK)
     public OrderDto updateOrder(@RequestBody OrderDto orderDto, @PathVariable("companyId") UUID companyId,
                                 @PathVariable("orderId") UUID orderId) {

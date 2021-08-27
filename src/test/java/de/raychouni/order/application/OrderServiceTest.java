@@ -26,7 +26,6 @@ import static org.mockito.Mockito.*;
 @ExtendWith(MockitoExtension.class)
 class OrderServiceTest {
 
-
     @Mock
     LoadOrdersOfCompanyPort loadOrdersOfCompanyPort;
 
