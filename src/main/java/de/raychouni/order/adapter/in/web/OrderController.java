@@ -20,7 +20,8 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 @RestController
-@CrossOrigin
+// Dev only: enable when ui is served from node webserver
+//@CrossOrigin
 @Slf4j
 public class OrderController {
 
