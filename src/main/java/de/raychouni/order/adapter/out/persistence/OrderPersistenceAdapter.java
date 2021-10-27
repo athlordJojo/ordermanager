@@ -58,7 +58,7 @@ public class OrderPersistenceAdapter implements LoadOrdersOfCompanyPort, LoadOrd
     }
 
     @Override
-    public Order updateOrderOfCompany(Order order) {
+    public Order updateOrderOfCompany(@NonNull Order order) {
         OrderJPA orderJPA = getOrderJPAFromOrder(order.getCompany().getUuid(), order.getUuid());
         // TODO: may also use mapper here ?
 //        modelMapper.map(order, orderJPA); // does not work, fails with:
