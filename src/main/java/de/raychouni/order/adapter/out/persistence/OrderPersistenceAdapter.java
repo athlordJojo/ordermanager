@@ -27,19 +27,19 @@ public class OrderPersistenceAdapter implements LoadOrdersOfCompanyPort, LoadOrd
     }
 
     @Override
-    public Order loadOrderOfCompany(UUID companyId, UUID orderId) {
+    public Order loadOrderOfCompany(@NonNull UUID companyId, @NonNull UUID orderId) {
         OrderJPA orderJPA = getOrderJPAFromOrder(companyId, orderId);
         return modelMapper.map(orderJPA, Order.class);
     }
 
     @Override
-    public List<Order> loadOrdersOfCompany(UUID companyUuid) {
+    public List<Order> loadOrdersOfCompany(@NonNull UUID companyUuid) {
         List<OrderJPA> ordersOfCompany = orderRepository.findAllByCompany_Uuid(companyUuid);
         return ordersOfCompany.stream().map(order -> modelMapper.map(order, Order.class)).collect(Collectors.toList());
     }
 
     @Override
-    public Order deleteOrderOfCompany(UUID companyId, UUID orderId) {
+    public Order deleteOrderOfCompany(@NonNull UUID companyId, @NonNull UUID orderId) {
         OrderJPA orderJpa = getOrderJPAFromOrder(companyId, orderId);
         orderJpa.getCompany().deleteOrder(orderJpa);
         Order order = modelMapper.map(orderJpa, Order.class);
@@ -58,18 +58,18 @@ public class OrderPersistenceAdapter implements LoadOrdersOfCompanyPort, LoadOrd
     }
 
     @Override
-    public Order updateOrderOfCompany(@NonNull Order order) {
-        OrderJPA orderJPA = getOrderJPAFromOrder(order.getCompany().getUuid(), order.getUuid());
+    public Order updateOrderOfCompany(@NonNull Order orderToUpdate) {
+        OrderJPA orderJPA = getOrderJPAFromOrder(orderToUpdate.getCompany().getUuid(), orderToUpdate.getUuid());
         // TODO: may also use mapper here ?
 //        modelMapper.map(order, orderJPA); // does not work, fails with:
-        orderJPA.setScoreBoardNumber(order.getScoreBoardNumber());
-        orderJPA.setTitle(order.getTitle());
-        orderJPA.setState(OrderJPA.State.valueOf(order.getState().name()));
+        orderJPA.setScoreBoardNumber(orderToUpdate.getScoreBoardNumber());
+        orderJPA.setTitle(orderToUpdate.getTitle());
+        orderJPA.setState(OrderJPA.State.valueOf(orderToUpdate.getState().name()));
         orderRepository.save(orderJPA);
         return modelMapper.map(orderJPA, Order.class);
     }
 
-    private OrderJPA getOrderJPAFromOrder(UUID companyId, UUID orderId) {
+    private OrderJPA getOrderJPAFromOrder(@NonNull UUID companyId, @NonNull UUID orderId) {
         return orderRepository.findFirstByUuidAndCompany_Uuid(orderId, companyId)
                 .orElseThrow(() -> new EntityNotFoundException("Could not find Order with id" + orderId + " for companyId: " + companyId));
     }
