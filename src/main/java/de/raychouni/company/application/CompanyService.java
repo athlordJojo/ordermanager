@@ -3,9 +3,8 @@ package de.raychouni.company.application;
 import de.raychouni.company.application.port.in.GetAllCompaniesUseCase;
 import de.raychouni.company.application.port.out.LoadAllCompaniesPort;
 import de.raychouni.company.domain.Company;
-import org.springframework.stereotype.Service;
-
 import java.util.List;
+import org.springframework.stereotype.Service;
 
 @Service
 public class CompanyService implements GetAllCompaniesUseCase {

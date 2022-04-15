@@ -5,13 +5,12 @@ import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
-public class OrderUpdate{
+public class OrderUpdate {
     CHANGE_TYPE change;
 
     public OrderUpdate(CHANGE_TYPE change) {
         this.change = change;
     }
-
 
     public enum CHANGE_TYPE {
         INSERTED("inserted"),

@@ -1,15 +1,12 @@
 package de.raychouni.order.domain;
 
 import de.raychouni.company.domain.Company;
-import lombok.Data;
-import lombok.Setter;
-import lombok.experimental.Accessors;
-
 import java.util.Date;
 import java.util.UUID;
+import lombok.Data;
 
 @Data
-//@Accessors(fluent = true)
+// @Accessors(fluent = true)
 public class Order {
     private UUID uuid;
     private String name;

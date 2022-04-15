@@ -16,7 +16,8 @@ public class OrderNotificationAdapter implements OrderChangedPort {
     private final SimpMessagingTemplate simpMessagingTemplate;
     private final ApplicationEventPublisher eventPublisher;
 
-    public OrderNotificationAdapter(SimpMessagingTemplate simpMessagingTemplate, ApplicationEventPublisher eventPublisher) {
+    public OrderNotificationAdapter(
+            SimpMessagingTemplate simpMessagingTemplate, ApplicationEventPublisher eventPublisher) {
         this.simpMessagingTemplate = simpMessagingTemplate;
         this.eventPublisher = eventPublisher;
     }

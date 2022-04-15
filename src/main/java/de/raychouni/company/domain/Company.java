@@ -1,10 +1,9 @@
 package de.raychouni.company.domain;
 
 import de.raychouni.order.adapter.out.persistence.entities.OrderJPA;
-import lombok.Data;
-
 import java.util.List;
 import java.util.UUID;
+import lombok.Data;
 
 @Data
 public class Company {

@@ -1,10 +1,9 @@
 package de.raychouni.order.application.port.in;
 
+import java.util.UUID;
 import lombok.Data;
 import lombok.Getter;
 import lombok.NonNull;
-
-import java.util.UUID;
 
 @Getter
 @Data
