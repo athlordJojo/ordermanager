@@ -16,6 +16,6 @@ spec:
     spec:
       containers:
         - name: ordermanager-app
-          image: joanimage/ordermanager:1.0.0
+          image: joanimage/ordermanager:1.0.3
           ports:
             - containerPort: 8080
