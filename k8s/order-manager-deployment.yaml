@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ordermanager-app
+  labels:
+    app: ordermanager
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ordermanager
+  template:
+    metadata:
+      labels:
+        app: ordermanager
+    spec:
+      containers:
+        - name: ordermanager-app
+          image: joanimage/ordermanager:1.0.0
+          ports:
+            - containerPort: 8080
