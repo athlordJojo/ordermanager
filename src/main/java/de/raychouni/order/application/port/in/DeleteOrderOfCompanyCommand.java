@@ -1,9 +1,8 @@
 package de.raychouni.order.application.port.in;
 
+import java.util.UUID;
 import lombok.Data;
 import lombok.NonNull;
-
-import java.util.UUID;
 
 @Data
 public class DeleteOrderOfCompanyCommand {

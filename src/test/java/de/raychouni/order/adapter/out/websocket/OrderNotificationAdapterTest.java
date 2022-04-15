@@ -1,5 +1,9 @@
 package de.raychouni.order.adapter.out.websocket;
 
+import static de.raychouni.order.domain.OrderUpdate.CHANGE_TYPE.*;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.verify;
+
 import de.raychouni.order.domain.OrderUpdate;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -10,17 +14,11 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 
-import static de.raychouni.order.domain.OrderUpdate.CHANGE_TYPE.*;
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.verify;
-
 @ExtendWith(MockitoExtension.class)
 class OrderNotificationAdapterTest {
 
-    @Mock
-    SimpMessagingTemplate simpMessagingTemplate;
-    @Mock
-    ApplicationEventPublisher eventPublisher;
+    @Mock SimpMessagingTemplate simpMessagingTemplate;
+    @Mock ApplicationEventPublisher eventPublisher;
 
     private OrderNotificationAdapter orderNotificationAdapter;
 

@@ -5,7 +5,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>2.4.3</version>
+        <version>2.6.6</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>de.raychouni</groupId>
@@ -22,6 +22,7 @@
         <sonar.organization>athlordjojo</sonar.organization>
         <sonar.host.url>https://sonarcloud.io</sonar.host.url>
     </properties>
+
 
     <dependencies>
         <dependency>
@@ -151,14 +152,23 @@
 <!--                    </formats>-->
                     <!-- define a language-specific format -->
                     <java>
-
+                        <importOrder /> <!-- standard import order -->
+                        <removeUnusedImports />
                         <!-- no need to specify files, inferred automatically, but you can if you want -->
 
                         <!-- apply a specific flavor of google-java-format and reflow long strings -->
-                            <indent> <!-- specify whether to use tabs or spaces for indentation -->
-                                <spaces>true</spaces> <!-- or <tabs>true</tabs> -->
-                                <spacesPerTab>4</spacesPerTab> <!-- optional, default is 4 -->
-                            </indent>
+                        <googleJavaFormat>
+                            <version>1.8</version>
+                            <style>GOOGLE</style>
+                        </googleJavaFormat>
+                        <indent>
+                            <tabs>true</tabs>
+                            <spacesPerTab>2</spacesPerTab>
+                        </indent>
+                        <indent>
+                            <spaces>true</spaces>
+                            <spacesPerTab>4</spacesPerTab>
+                        </indent>
                     </java>
                 </configuration>
             </plugin>

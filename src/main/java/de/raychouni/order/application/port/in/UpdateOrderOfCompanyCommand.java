@@ -1,9 +1,8 @@
 package de.raychouni.order.application.port.in;
 
 import de.raychouni.order.domain.Order;
-import lombok.Data;
-
 import java.util.UUID;
+import lombok.Data;
 
 @Data
 public class UpdateOrderOfCompanyCommand {
