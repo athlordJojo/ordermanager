@@ -1,0 +1,8 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://postgres-service:5432/ordermanager
+    username: user
+    password: password
+    driver-class-name: org.postgresql.Driver
+  flyway:
+    locations: classpath:db/migration/common,classpath:db/migration/postgres

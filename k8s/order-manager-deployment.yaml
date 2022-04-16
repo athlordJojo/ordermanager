@@ -16,6 +16,9 @@ spec:
     spec:
       containers:
         - name: ordermanager-app
-          image: joanimage/ordermanager:1.0.3
+          image: joanimage/ordermanager:1.0.6
           ports:
             - containerPort: 8080
+          env:
+            - name: spring_profiles_active
+              value: postgres

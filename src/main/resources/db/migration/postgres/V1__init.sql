@@ -1,20 +1,22 @@
+CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
+SELECT uuid_generate_v4();
+
 create table company
 (
-    uuid        BINARY(16) not null,
+    uuid        uuid DEFAULT uuid_generate_v4 (),
     description varchar(255),
     name        varchar(255),
     primary key (uuid)
 );
-
 create table order_table
 (
-    uuid               BINARY(16)  not null,
+    uuid               uuid DEFAULT uuid_generate_v4 (),
     created_date       timestamp,
     last_modified_date timestamp,
     scoreboardnumber   integer     not null,
     state              varchar(11) not null,
     title              varchar(255),
-    company_uuid       BINARY(16),
+    company_uuid       uuid DEFAULT uuid_generate_v4 (),
     primary key (uuid)
 );
 

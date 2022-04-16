@@ -4,9 +4,12 @@ spring:
       enabled: false
       path: "/h2"
   datasource:
-    url: jdbc:postgresql://postgres-service:5432/ordermanager
-    username: user
-    password: password
+    url: jdbc:h2:file:./ordermanager-db
+    username: foo
+    password: bar
+    driver-class-name: org.h2.Driver
+  flyway:
+    locations: classpath:db/migration/common,classpath:db/migration/h2
   jpa:
     hibernate:
       ddl-auto: none
