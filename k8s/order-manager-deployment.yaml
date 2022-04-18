@@ -14,6 +14,10 @@ spec:
       labels:
         app: ordermanager
     spec:
+      volumes:
+        - name: config
+          configMap:
+            name: order-manager-config
       containers:
         - name: ordermanager-app
           image: joanimage/ordermanager:1.0.6
@@ -22,3 +26,9 @@ spec:
           env:
             - name: spring_profiles_active
               value: postgres
+            - name: SPRING_CONFIG_LOCATION
+              value: /config/application.yaml
+          volumeMounts:
+            - name: config
+              mountPath: "/config"
+              readOnly: true
