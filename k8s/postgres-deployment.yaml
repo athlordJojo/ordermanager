@@ -19,13 +19,9 @@ spec:
           image: postgres:14.2-alpine
           ports:
             - containerPort: 5432
-          env:
-            - name: POSTGRES_PASSWORD
-              value: password
-            - name: POSTGRES_USER
-              value: user
-            - name: PGDATA
-              value: "/postgresdata"
+          envFrom:
+            - configMapRef:
+                name: postgres-config
           volumeMounts:
             - mountPath: "/postgresdata"
               name: postgres-pv-storage
